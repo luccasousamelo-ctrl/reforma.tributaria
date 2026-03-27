@@ -4,923 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulador Reforma Tributária 2026 | Descubra o Impacto no Seu Negócio</title>
-  <meta name="description" content="Simule gratuitamente o impacto da Reforma Tributária no seu negócio. Simples Nacional, Lucro Presumido, Lucro Real, CST, CClassTrib e NBS.">
+  <meta name="description" content="Simule o impacto da Reforma Tributária no seu negócio. Simples Nacional, Lucro Presumido, Lucro Real, CST, CClassTrib e NBS.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1a56db;
-      --primary-dark: #1444b0;
-      --primary-light: #e8effc;
-      --accent: #f59e0b;
-      --accent-dark: #d97706;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --dark: #111827;
-      --gray-900: #1f2937;
-      --gray-800: #374151;
-      --gray-700: #4b5563;
-      --gray-600: #6b7280;
-      --gray-500: #9ca3af;
-      --gray-400: #d1d5db;
-      --gray-300: #e5e7eb;
-      --gray-200: #f3f4f6;
-      --gray-100: #f9fafb;
-      --white: #ffffff;
-      --gradient-hero: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a56db 100%);
-      --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-      --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
-      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1);
-      --radius: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--gray-800);
-      line-height: 1.6;
-      background: var(--white);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ====== LEAD CAPTURE OVERLAY ====== */
-    .lead-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-    .lead-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .lead-card {
-      background: var(--white);
-      border-radius: var(--radius-xl);
-      max-width: 520px;
-      width: 100%;
-      padding: 48px 40px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
-      position: relative;
-      animation: slideUp 0.6s ease;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .lead-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--primary-light);
-      color: var(--primary);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 100px;
-      margin-bottom: 20px;
-      letter-spacing: 0.02em;
-    }
-    .lead-badge svg { width: 14px; height: 14px; }
-    .lead-card h2 {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--dark);
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-    .lead-card h2 span { color: var(--primary); }
-    .lead-card .lead-sub {
-      color: var(--gray-600);
-      font-size: 15px;
-      margin-bottom: 28px;
-      line-height: 1.5;
-    }
-    .lead-card .lead-sub strong { color: var(--gray-800); }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gray-700);
-      margin-bottom: 6px;
-    }
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid var(--gray-300);
-      border-radius: var(--radius);
-      font-size: 15px;
-      font-family: inherit;
-      color: var(--dark);
-      background: var(--gray-100);
-      transition: all 0.2s;
-      outline: none;
-    }
-    .form-group input:focus, .form-group select:focus {
-      border-color: var(--primary);
-      background: var(--white);
-      box-shadow: 0 0 0 3px rgba(26,86,219,.12);
-    }
-    .form-group input::placeholder { color: var(--gray-500); }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 14px 24px;
-      background: var(--primary);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius);
-      font-size: 16px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-lg);
-    }
-    .lead-trust {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 20px;
-      font-size: 12px;
-      color: var(--gray-500);
-    }
-    .lead-trust span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* ====== NAVBAR ====== */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      padding: 0 24px;
-    }
-    .navbar-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-    }
-    .navbar-logo {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--white);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .navbar-logo svg { width: 28px; height: 28px; }
-    .navbar-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-    .navbar-links a {
-      color: rgba(255,255,255,.7);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    .navbar-links a:hover { color: var(--white); }
-    .navbar-cta {
-      padding: 8px 20px;
-      background: var(--accent);
-      color: var(--dark);
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .navbar-cta:hover { background: var(--accent-dark); }
-    .mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-
-    /* ====== HERO ====== */
-    .hero {
-      background: var(--gradient-hero);
-      padding: 140px 24px 100px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(245,158,11,.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 120px;
-      background: linear-gradient(to top, var(--white), transparent);
-      pointer-events: none;
-    }
-    .hero-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(245,158,11,.15);
-      border: 1px solid rgba(245,158,11,.3);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .hero h1 {
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 900;
-      color: var(--white);
-      line-height: 1.1;
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-    .hero h1 .highlight {
-      background: var(--gradient-accent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 18px;
-      color: rgba(255,255,255,.7);
-      max-width: 640px;
-      margin: 0 auto 36px;
-      line-height: 1.6;
-    }
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-top: 48px;
-    }
-    .hero-stat {
-      text-align: center;
-    }
-    .hero-stat .number {
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--accent);
-      display: block;
-      line-height: 1;
-    }
-    .hero-stat .label {
-      font-size: 13px;
-      color: rgba(255,255,255,.5);
-      margin-top: 6px;
-      display: block;
-    }
-
-    /* ====== SECTIONS ====== */
-    .section {
-      padding: 80px 24px;
-    }
-    .section-dark {
-      background: var(--gray-100);
-    }
-    .section-title {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    .section-title .overline {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--primary);
-      margin-bottom: 8px;
-    }
-    .section-title h2 {
-      font-size: clamp(28px, 3.5vw, 40px);
-      font-weight: 800;
-      color: var(--dark);
-      line-height: 1.2;
-      margin-bottom: 12px;
-    }
-    .section-title p {
-      font-size: 16px;
-      color: var(--gray-600);
-      max-width: 560px;
-      margin: 0 auto;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* ====== INFO CARDS ====== */
-    .info-grid {
-      display: grid;
-      gap: 24px;
-    }
-    .info-grid-4 {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .info-grid-2-center {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 620px;
-      margin: 24px auto 0;
-    }
-    .info-card {
-      background: var(--white);
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius-lg);
-      padding: 32px 28px;
-      transition: all 0.3s;
-    }
-    .info-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-4px);
-    }
-    .info-card .icon {
-      width: 48px;
-      height: 48px;
-      background: var(--primary-light);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 16px;
-    }
-    .info-card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 8px;
-    }
-    .info-card p {
-      font-size: 14px;
-      color: var(--gray-600);
-      line-height: 1.6;
-    }
-
-    /* ====== TIMELINE ====== */
-    .timeline {
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 24px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: var(--gray-300);
-    }
-    .timeline-item {
-      display: flex;
-      gap: 24px;
-      margin-bottom: 32px;
-      position: relative;
-    }
-    .timeline-dot {
-      width: 50px;
-      min-width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      z-index: 1;
-    }
-    .timeline-dot.active {
-      background: var(--accent);
-      color: var(--dark);
-      box-shadow: 0 0 0 6px rgba(245,158,11,.2);
-    }
-    .timeline-content {
-      background: var(--white);
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      flex: 1;
-    }
-    .timeline-content h4 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 4px;
-    }
-    .timeline-content p {
-      font-size: 14px;
-      color: var(--gray-600);
-    }
-
-    /* ====== SIMULATOR ====== */
-    #simulador { scroll-margin-top: 80px; }
-    .simulator-wrap {
-      background: var(--white);
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-xl);
-      overflow: hidden;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .sim-tabs {
-      display: flex;
-      background: var(--gray-900);
-      overflow-x: auto;
-    }
-    .sim-tab {
-      flex: 1;
-      padding: 16px 20px;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,.6);
-      font-size: 13px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-      border-bottom: 3px solid transparent;
-    }
-    .sim-tab:hover { color: var(--white); background: rgba(255,255,255,.05); }
-    .sim-tab.active {
-      color: var(--white);
-      background: rgba(255,255,255,.08);
-      border-bottom-color: var(--accent);
-    }
-    .sim-panel {
-      display: none;
-      padding: 36px 32px;
-    }
-    .sim-panel.active { display: block; }
-    .sim-panel h3 {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 4px;
-    }
-    .sim-panel .sim-desc {
-      color: var(--gray-600);
-      font-size: 14px;
-      margin-bottom: 28px;
-    }
-    .sim-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .sim-form .full-width { grid-column: 1 / -1; }
-    .sim-form label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gray-700);
-      margin-bottom: 6px;
-    }
-    .sim-form input, .sim-form select {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid var(--gray-300);
-      border-radius: 10px;
-      font-size: 14px;
-      font-family: inherit;
-      color: var(--dark);
-      background: var(--gray-100);
-      transition: all 0.2s;
-      outline: none;
-    }
-    .sim-form input:focus, .sim-form select:focus {
-      border-color: var(--primary);
-      background: var(--white);
-      box-shadow: 0 0 0 3px rgba(26,86,219,.1);
-    }
-    .sim-form .help-text {
-      font-size: 12px;
-      color: var(--gray-500);
-      margin-top: 4px;
-    }
-    .btn-simulate {
-      padding: 13px 32px;
-      background: var(--primary);
-      color: var(--white);
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .btn-simulate:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-    .result-box {
-      display: none;
-      margin-top: 28px;
-      background: var(--gray-100);
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius);
-      padding: 28px;
-    }
-    .result-box.show { display: block; animation: slideUp 0.4s ease; }
-    .result-box h4 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .result-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .result-item {
-      background: var(--white);
-      border-radius: 10px;
-      padding: 16px;
-      border: 1px solid var(--gray-300);
-    }
-    .result-item .rl {
-      font-size: 12px;
-      color: var(--gray-500);
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-    .result-item .rv {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--dark);
-      margin-top: 4px;
-    }
-    .result-item .rv.positive { color: var(--success); }
-    .result-item .rv.negative { color: var(--danger); }
-    .result-item .rv.neutral { color: var(--primary); }
-    .result-compare {
-      margin-top: 16px;
-      background: var(--white);
-      border-radius: 10px;
-      padding: 20px;
-      border: 1px solid var(--gray-300);
-    }
-    .result-compare h5 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--dark);
-    }
-    .compare-bar-wrap {
-      margin-bottom: 12px;
-    }
-    .compare-bar-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .compare-bar-label span:first-child { color: var(--gray-600); font-weight: 500; }
-    .compare-bar-label span:last-child { font-weight: 700; color: var(--dark); }
-    .compare-bar {
-      height: 8px;
-      background: var(--gray-200);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .compare-bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.8s ease;
-    }
-    .fill-before { background: var(--gray-500); }
-    .fill-after-up { background: var(--danger); }
-    .fill-after-down { background: var(--success); }
-    .fill-neutral { background: var(--primary); }
-    .result-alert {
-      margin-top: 16px;
-      padding: 14px 18px;
-      border-radius: 10px;
-      font-size: 13px;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .result-alert.alert-warning {
-      background: #fef3c7;
-      border: 1px solid #fde68a;
-      color: #92400e;
-    }
-    .result-alert.alert-info {
-      background: #dbeafe;
-      border: 1px solid #bfdbfe;
-      color: #1e40af;
-    }
-    .result-alert.alert-success {
-      background: #d1fae5;
-      border: 1px solid #a7f3d0;
-      color: #065f46;
-    }
-
-    /* ====== CST/CCLASS LOOKUP ====== */
-    .lookup-input-group {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .lookup-input-group input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 1.5px solid var(--gray-300);
-      border-radius: 10px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      background: var(--gray-100);
-    }
-    .lookup-input-group input:focus {
-      border-color: var(--primary);
-      background: var(--white);
-    }
-    .lookup-input-group button {
-      padding: 12px 24px;
-      background: var(--primary);
-      color: var(--white);
-      border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .lookup-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 13px;
-    }
-    .lookup-table thead th {
-      background: var(--gray-900);
-      color: var(--white);
-      padding: 12px 14px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .lookup-table thead th:first-child { border-radius: 10px 0 0 0; }
-    .lookup-table thead th:last-child { border-radius: 0 10px 0 0; }
-    .lookup-table tbody td {
-      padding: 11px 14px;
-      border-bottom: 1px solid var(--gray-200);
-      color: var(--gray-700);
-    }
-    .lookup-table tbody tr:hover td { background: var(--primary-light); }
-    .lookup-table tbody tr:last-child td:first-child { border-radius: 0 0 0 10px; }
-    .lookup-table tbody tr:last-child td:last-child { border-radius: 0 0 10px 0; }
-    .tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .tag-blue { background: #dbeafe; color: #1e40af; }
-    .tag-green { background: #d1fae5; color: #065f46; }
-    .tag-orange { background: #fef3c7; color: #92400e; }
-    .tag-red { background: #fee2e2; color: #991b1b; }
-    .tag-purple { background: #ede9fe; color: #5b21b6; }
-    .tag-gray { background: #f3f4f6; color: #374151; }
-
-    /* ====== Filter Chips ====== */
-    .filter-chip {
-      padding: 6px 14px;
-      border: 1.5px solid var(--gray-300);
-      border-radius: 100px;
-      background: var(--white);
-      font-size: 12px;
-      font-weight: 600;
-      font-family: inherit;
-      color: var(--gray-600);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .filter-chip.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: var(--white);
-    }
-
-    /* ====== B2B/B2C Toggle ====== */
-    .toggle-group {
-      display: flex;
-      background: var(--gray-200);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 8px;
-    }
-    .toggle-btn {
-      flex: 1;
-      padding: 10px 16px;
-      border: none;
-      background: none;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
-      color: var(--gray-600);
-    }
-    .toggle-btn.active {
-      background: var(--white);
-      color: var(--primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* ====== CTA SECTION ====== */
-    .cta-section {
-      background: var(--gradient-hero);
-      padding: 80px 24px;
-      text-align: center;
-    }
-    .cta-section h2 {
-      font-size: clamp(28px, 3.5vw, 40px);
-      font-weight: 800;
-      color: var(--white);
-      margin-bottom: 16px;
-    }
-    .cta-section p {
-      color: rgba(255,255,255,.7);
-      font-size: 16px;
-      max-width: 500px;
-      margin: 0 auto 32px;
-    }
-    .cta-section .btn-primary {
-      display: inline-flex;
-      width: auto;
-      padding: 16px 36px;
-      font-size: 17px;
-      background: var(--accent);
-      color: var(--dark);
-    }
-    .cta-section .btn-primary:hover { background: var(--accent-dark); }
-
-    /* ====== FOOTER ====== */
-    .footer {
-      background: var(--gray-900);
-      padding: 40px 24px;
-      text-align: center;
-      color: var(--gray-500);
-      font-size: 13px;
-    }
-
-    /* ====== FAQ ====== */
-    .faq-list {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .faq-item {
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius);
-      margin-bottom: 12px;
-      overflow: hidden;
-      background: var(--white);
-    }
-    .faq-question {
-      width: 100%;
-      padding: 18px 20px;
-      background: none;
-      border: none;
-      text-align: left;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--dark);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: inherit;
-    }
-    .faq-question::after {
-      content: '+';
-      font-size: 20px;
-      color: var(--gray-500);
-      transition: transform 0.2s;
-    }
-    .faq-item.open .faq-question::after {
-      content: '−';
-    }
-    .faq-answer {
-      display: none;
-      padding: 0 20px 18px;
-      font-size: 14px;
-      color: var(--gray-600);
-      line-height: 1.6;
-    }
-    .faq-item.open .faq-answer { display: block; }
-
-    /* ====== RESPONSIVE ====== */
-    @media (max-width: 768px) {
-      .hero { padding: 120px 20px 80px; }
-      .hero-stats { gap: 24px; flex-wrap: wrap; }
-      .hero-stat .number { font-size: 28px; }
-      .navbar-links { display: none; }
-      .mobile-toggle { display: block; }
-      .sim-tabs { flex-wrap: nowrap; overflow-x: auto; }
-      .sim-tab { font-size: 12px; padding: 14px 14px; }
-      .sim-form { grid-template-columns: 1fr; }
-      .sim-panel { padding: 24px 20px; }
-      .result-grid { grid-template-columns: 1fr; }
-      .lead-card { padding: 32px 24px; }
-      .lead-card h2 { font-size: 24px; }
-      .form-row { grid-template-columns: 1fr; }
-      .info-grid-4 { grid-template-columns: 1fr; }
-      .info-grid-2-center { grid-template-columns: 1fr; max-width: 100%; }
-      .lookup-input-group { flex-direction: column; }
-      .timeline-item { gap: 16px; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -929,10 +16,10 @@
   <div class="lead-card">
     <div class="lead-badge">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      Acesso Gratuito
+      Acesso ao Simulador
     </div>
     <h2>Simule o Impacto da <span>Reforma Tributária</span> no Seu Negócio</h2>
-    <p class="lead-sub">Preencha seus dados e acesse o <strong>simulador completo</strong> com cálculos para Simples Nacional, Lucro Presumido e Lucro Real.</p>
+    <p class="lead-sub">Preencha seus dados e acesse o <strong>simulador</strong> com cálculos para Simples Nacional, Lucro Presumido e Lucro Real.</p>
 
     <form id="leadForm" onsubmit="return handleLeadSubmit(event)">
       <div class="form-group">
@@ -949,8 +36,8 @@
           <input type="tel" id="leadPhone" placeholder="(11) 99999-9999" required>
         </div>
         <div class="form-group">
-          <label>CNPJ</label>
-          <input type="text" id="leadCnpj" placeholder="00.000.000/0000-00">
+          <label>CPF ou CNPJ</label>
+          <input type="text" id="leadCnpj" placeholder="000.000.000-00">
         </div>
       </div>
       <div class="form-row">
@@ -979,7 +66,7 @@
         </div>
       </div>
       <button type="submit" class="btn-primary">
-        Acessar Simulador Gratuito
+        Acessar Simulador
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </form>
@@ -991,7 +78,7 @@
       </span>
       <span>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        100% gratuito
+        1 simulação grátis/dia
       </span>
       <span>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -1013,9 +100,10 @@
       <li><a href="#simulador">Simulador</a></li>
       <li><a href="#consulta-cst">CST / CClass</a></li>
       <li><a href="#consulta-nbs">Serviços NBS</a></li>
+      <li><a href="#pricing">Planos</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
-    <a href="#simulador" class="navbar-cta">Simular Agora</a>
+    <a href="#pricing" class="navbar-cta">Assinar PRO</a>
     <button class="mobile-toggle" onclick="document.querySelector('.navbar-links').classList.toggle('show')">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -1033,11 +121,11 @@
       <span class="highlight">Nova Tributação?</span>
     </h1>
     <p>
-      Simule gratuitamente o impacto da Reforma Tributária em todos os regimes.
+      Simule o impacto da Reforma Tributária em todos os regimes.
       Descubra se vai pagar mais ou menos impostos com IBS e CBS.
     </p>
     <a href="#simulador" class="btn-primary" style="display:inline-flex;width:auto;padding:16px 36px;font-size:17px;">
-      Acessar Simulador Gratuito
+      Acessar Simulador
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
     <div class="hero-stats">
@@ -1149,9 +237,10 @@
 <section class="section section-dark" id="simulador">
   <div class="container">
     <div class="section-title">
-      <span class="overline">Simulador Completo</span>
+      <span class="overline">Simulador</span>
       <h2>Calcule o impacto no seu negócio</h2>
       <p>Selecione seu regime tributário e veja a comparação antes vs. depois da reforma.</p>
+      <div class="sim-limit-badge">1 simulação gratuita por dia</div>
     </div>
 
     <div class="simulator-wrap">
@@ -1255,6 +344,30 @@
             <p class="help-text">Mercadorias, insumos e serviços com direito a crédito</p>
           </div>
           <div>
+            <label>Estado (ICMS)</label>
+            <select id="lp-estado">
+              <option value="0.18">SP — 18%</option>
+              <option value="0.18">MG — 18%</option>
+              <option value="0.20">RJ — 20%</option>
+              <option value="0.195">PR — 19,5%</option>
+              <option value="0.17">RS — 17%</option>
+              <option value="0.17">SC — 17%</option>
+              <option value="0.205">BA — 20,5%</option>
+              <option value="0.205">PE — 20,5%</option>
+              <option value="0.20">CE — 20%</option>
+              <option value="0.19">GO — 19%</option>
+              <option value="0.20">DF — 20%</option>
+              <option value="0.225">PI — 22,5%</option>
+              <option value="0.23">MA — 23%</option>
+              <option value="0.18">Outro — 18% (média)</option>
+            </select>
+          </div>
+          <div>
+            <label>Alíquota ISS do Município (%)</label>
+            <input type="number" id="lp-iss" value="5" min="2" max="5" step="0.5">
+            <p class="help-text">ISS varia de 2% a 5% conforme o município</p>
+          </div>
+          <div>
             <label>Tipo de Cliente</label>
             <div class="toggle-group">
               <button type="button" class="toggle-btn active" onclick="setToggle(this, 'lp-clientType', 'b2b')">B2B</button>
@@ -1281,6 +394,15 @@
 
         <div class="sim-form">
           <div>
+            <label>Regime PIS/COFINS Atual</label>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn" onclick="setToggle(this, 'lr-regime-pis', 'cumulativo')">Cumulativo (3,65%)</button>
+              <button type="button" class="toggle-btn active" onclick="setToggle(this, 'lr-regime-pis', 'nao-cumulativo')">Não-Cumulativo (9,25%)</button>
+            </div>
+            <input type="hidden" id="lr-regime-pis" value="nao-cumulativo">
+            <p class="help-text">Cumulativo: PIS 0,65% + COFINS 3% (sem créditos). Não-cumulativo: PIS 1,65% + COFINS 7,6% (com créditos).</p>
+          </div>
+          <div>
             <label>Faturamento Mensal (R$)</label>
             <input type="text" id="lr-faturamento" placeholder="1.000.000,00" oninput="formatCurrency(this)">
           </div>
@@ -1304,7 +426,7 @@
           <div>
             <label>Créditos Atuais PIS/COFINS (%)</label>
             <input type="number" id="lr-creditos-pct" value="60" min="0" max="100">
-            <p class="help-text">% do faturamento que gera crédito hoje</p>
+            <p class="help-text">% das compras/despesas que gera crédito hoje (só no não-cumulativo)</p>
           </div>
           <div>
             <label>Setor com Alíquota Reduzida?</label>
@@ -1350,7 +472,7 @@
 
         <div id="cst-count" style="font-size:13px;color:var(--gray-500);margin-bottom:12px;"></div>
 
-        <div style="overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:var(--radius);" id="cst-scroll">
+        <div style="overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:var(--radius);position:relative;" id="cst-scroll">
           <table class="lookup-table" id="cst-table" style="margin:0;">
             <thead style="position:sticky;top:0;z-index:2;">
               <tr>
@@ -1408,15 +530,16 @@
 
         <div id="nbs-count" style="font-size:13px;color:var(--gray-500);margin-bottom:12px;"></div>
 
-        <div style="overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:var(--radius);" id="nbs-scroll">
+        <div style="overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:var(--radius);position:relative;" id="nbs-scroll">
           <table class="lookup-table" id="nbs-table" style="margin:0;">
             <thead style="position:sticky;top:0;z-index:2;">
               <tr>
                 <th>Item LC 116</th>
                 <th>NBS</th>
                 <th>Descrição do Serviço</th>
-                <th>Indicador de Operação</th>
-                <th>IBS/CBS Reforma</th>
+                <th>Local Incidência IBS</th>
+                <th>cClassTrib</th>
+                <th>Classificação Tributária</th>
                 <th>Regime</th>
               </tr>
             </thead>
@@ -1447,8 +570,95 @@
   </div>
 </section>
 
+<!-- ==================== PRICING ==================== -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-title">
+      <span class="overline">Plano Profissional</span>
+      <h2>Acesso completo ao simulador</h2>
+      <p>Desbloqueie simulações ilimitadas e a base completa de NCMs e serviços NBS.</p>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-badge">Mais Escolhido</div>
+      <h3>Profissional</h3>
+      <p class="pricing-desc">Tudo que você precisa para se preparar para a reforma tributária.</p>
+      <div class="pricing-price">
+        <span class="currency">R$</span>
+        <span class="amount">49<small style="font-size:28px;">,90</small></span>
+        <span class="period">/mês</span>
+      </div>
+
+      <ul class="pricing-features">
+        <li>
+          <span class="check">&#10003;</span>
+          <span><strong>Simulações ilimitadas</strong> — Simples, Presumido e Real</span>
+        </li>
+        <li>
+          <span class="check">&#10003;</span>
+          <span><strong>Base completa CST/CClassTrib</strong> — todos os NCMs e alíquotas</span>
+        </li>
+        <li>
+          <span class="check">&#10003;</span>
+          <span><strong>Base completa NBS</strong> — todos os serviços com classificação</span>
+        </li>
+        <li>
+          <span class="check">&#10003;</span>
+          <span><strong>Relatórios detalhados</strong> com recomendações</span>
+        </li>
+        <li>
+          <span class="check">&#10003;</span>
+          <span><strong>Atualizações automáticas</strong> conforme a regulamentação evolui</span>
+        </li>
+        <li>
+          <span class="check">&#10003;</span>
+          <span><strong>Cancele quando quiser</strong> — sem fidelidade ou multa</span>
+        </li>
+      </ul>
+
+      <button class="btn-primary" onclick="handleSubscribe()" id="btn-subscribe" style="font-size:17px;padding:16px;">
+        Assinar Agora - R$ 49,90/mês
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+
+      <p class="pricing-guarantee">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Pagamento seguro via Asaas. Boleto, PIX ou Cartão de Crédito.
+      </p>
+    </div>
+
+    <!-- Comparativo Gratuito vs PRO -->
+    <div class="pricing-comparison">
+      <div class="comparison-col free">
+        <h4>Gratuito</h4>
+        <ul class="comparison-list">
+          <li><span class="yes">&#10003;</span> Conteúdo educacional completo</li>
+          <li><span class="yes">&#10003;</span> 1 simulação por dia</li>
+          <li><span class="yes">&#10003;</span> 5 primeiros itens CST/NBS</li>
+          <li><span class="no">&#10005;</span> Simulações ilimitadas</li>
+          <li><span class="no">&#10005;</span> Base completa de NCMs</li>
+          <li><span class="no">&#10005;</span> Base completa de NBS</li>
+          <li><span class="no">&#10005;</span> Relatórios detalhados</li>
+        </ul>
+      </div>
+      <div class="comparison-col pro">
+        <h4>Profissional - R$ 49,90/mês</h4>
+        <ul class="comparison-list">
+          <li><span class="yes">&#10003;</span> Conteúdo educacional completo</li>
+          <li><span class="yes">&#10003;</span> Simulações ilimitadas</li>
+          <li><span class="yes">&#10003;</span> Base completa CST/CClassTrib</li>
+          <li><span class="yes">&#10003;</span> Base completa de NCMs</li>
+          <li><span class="yes">&#10003;</span> Base completa de NBS</li>
+          <li><span class="yes">&#10003;</span> Relatórios detalhados</li>
+          <li><span class="yes">&#10003;</span> Atualizações prioritárias</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ==================== FAQ ==================== -->
-<section class="section" id="faq">
+<section class="section section-dark" id="faq">
   <div class="container">
     <div class="section-title">
       <span class="overline">Dúvidas Frequentes</span>
@@ -1480,16 +690,20 @@
         <button class="faq-question" onclick="toggleFaq(this)">O que é o split payment?</button>
         <div class="faq-answer">O split payment é um mecanismo automático onde, no momento do pagamento, o banco ou a instituição financeira separa o valor do imposto (IBS/CBS) e repassa diretamente ao governo. Isso reduz a sonegação e simplifica o recolhimento para as empresas.</div>
       </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">Como funciona a assinatura do simulador?</button>
+        <div class="faq-answer">A assinatura custa R$ 49,90/mês e libera simulações ilimitadas, acesso completo às tabelas CST/CClassTrib e NBS, e relatórios detalhados. O pagamento é processado pela Asaas com opções de PIX, boleto ou cartão de crédito. Você pode cancelar a qualquer momento, sem multa ou fidelidade.</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ==================== CTA FINAL ==================== -->
 <section class="cta-section">
-  <h2>Não espere 2026 chegar.<br>Prepare sua empresa agora.</h2>
-  <p>Fale com nossos especialistas e receba um diagnóstico personalizado do impacto tributário no seu negócio.</p>
-  <a href="#simulador" class="btn-primary">
-    Falar com Especialista
+  <h2>Não espere a reforma chegar.<br>Prepare sua empresa agora.</h2>
+  <p>Acesse o simulador completo e descubra exatamente como a reforma tributária vai impactar o seu negócio.</p>
+  <a href="#pricing" class="btn-primary">
+    Assinar Plano Profissional
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 </section>
@@ -1500,1492 +714,10 @@
   <p style="margin-top:8px;color:var(--gray-600);">Os cálculos são estimativas baseadas nas regras da EC 132/2023 e LC complementares. Valores podem sofrer alterações.</p>
 </footer>
 
-<script>
-// ==================== UTILITIES ====================
-function parseCurrency(value) {
-  if (!value) return 0;
-  return parseFloat(String(value).replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '')) || 0;
-}
-
-function formatCurrency(input) {
-  let v = input.value.replace(/\D/g, '');
-  if (!v) { input.value = ''; return; }
-  v = (parseInt(v) / 100).toFixed(2);
-  v = v.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  input.value = v;
-}
-
-function formatBRL(n) {
-  return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-function formatPct(n) {
-  return n.toFixed(2).replace('.', ',') + '%';
-}
-
-// ==================== LEAD CAPTURE ====================
-function handleLeadSubmit(e) {
-  e.preventDefault();
-  const data = {
-    name: document.getElementById('leadName').value,
-    email: document.getElementById('leadEmail').value,
-    phone: document.getElementById('leadPhone').value,
-    cnpj: document.getElementById('leadCnpj').value,
-    regime: document.getElementById('leadRegime').value,
-    segment: document.getElementById('leadSegment').value,
-    timestamp: new Date().toISOString()
-  };
-
-  // Store lead locally (integrate with your CRM/API)
-  const leads = JSON.parse(localStorage.getItem('leads') || '[]');
-  leads.push(data);
-  localStorage.setItem('leads', JSON.stringify(leads));
-
-  // Close overlay
-  document.getElementById('leadOverlay').classList.add('hidden');
-
-  // Pre-fill simulator regime
-  if (data.regime === 'simples') showTab('simples');
-  else if (data.regime === 'presumido') showTab('presumido');
-  else if (data.regime === 'real') showTab('real');
-
-  return false;
-}
-
-// Check if already submitted
-if (localStorage.getItem('leads')) {
-  document.getElementById('leadOverlay').classList.add('hidden');
-}
-
-// ==================== TABS ====================
-function showTab(tabId) {
-  document.querySelectorAll('.sim-tab').forEach((t, i) => {
-    const ids = ['simples', 'presumido', 'real', 'cst', 'nbs'];
-    t.classList.toggle('active', ids[i] === tabId);
-  });
-  document.querySelectorAll('.sim-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + tabId).classList.add('active');
-}
-
-// ==================== TOGGLE B2B/B2C ====================
-function setToggle(btn, inputId, value) {
-  btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(inputId).value = value;
-}
-
-// ==================== SIMPLES NACIONAL ====================
-function calcSimples() {
-  const fat = parseCurrency(document.getElementById('sn-faturamento').value);
-  const rbt12 = parseCurrency(document.getElementById('sn-rbt12').value);
-  const atividade = document.getElementById('sn-atividade').value;
-  const folha = parseCurrency(document.getElementById('sn-folha').value);
-  const clientType = document.getElementById('sn-clientType').value;
-  const pctB2B = parseFloat(document.getElementById('sn-pctB2B').value) / 100;
-  const compras = parseCurrency(document.getElementById('sn-compras').value);
-
-  if (!fat || !rbt12) { alert('Preencha o faturamento mensal e anual.'); return; }
-
-  // Simples Nacional tax rates by bracket (simplified)
-  const faixas = [
-    { max: 180000, aliq: { comercio: 4.0, industria: 4.5, 'servicos-iii': 6.0, 'servicos-iv': 4.5, 'servicos-v': 15.5 }, ded: 0 },
-    { max: 360000, aliq: { comercio: 7.3, industria: 7.8, 'servicos-iii': 11.2, 'servicos-iv': 9.0, 'servicos-v': 18.0 }, ded: { comercio: 5940, industria: 5940, 'servicos-iii': 9360, 'servicos-iv': 8100, 'servicos-v': 4500 } },
-    { max: 720000, aliq: { comercio: 9.5, industria: 10.0, 'servicos-iii': 13.5, 'servicos-iv': 11.2, 'servicos-v': 19.5 }, ded: { comercio: 13860, industria: 13860, 'servicos-iii': 17640, 'servicos-iv': 12420, 'servicos-v': 9900 } },
-    { max: 1800000, aliq: { comercio: 10.7, industria: 11.2, 'servicos-iii': 16.0, 'servicos-iv': 14.0, 'servicos-v': 20.5 }, ded: { comercio: 22500, industria: 22500, 'servicos-iii': 35640, 'servicos-iv': 39780, 'servicos-v': 17100 } },
-    { max: 3600000, aliq: { comercio: 14.3, industria: 14.7, 'servicos-iii': 21.0, 'servicos-iv': 22.0, 'servicos-v': 23.0 }, ded: { comercio: 87300, industria: 85500, 'servicos-iii': 125640, 'servicos-iv': 183780, 'servicos-v': 62100 } },
-    { max: 4800000, aliq: { comercio: 19.0, industria: 30.0, 'servicos-iii': 33.0, 'servicos-iv': 33.0, 'servicos-v': 30.5 }, ded: { comercio: 378000, industria: 378000, 'servicos-iii': 648000, 'servicos-iv': 828000, 'servicos-v': 540000 } }
-  ];
-
-  let faixa = faixas.find(f => rbt12 <= f.max) || faixas[faixas.length - 1];
-  let aliqNominal = faixa.aliq[atividade] || faixa.aliq['comercio'];
-  let deducao = typeof faixa.ded === 'object' ? (faixa.ded[atividade] || 0) : faixa.ded;
-
-  // Effective rate
-  let aliqEfetiva = ((rbt12 * aliqNominal / 100) - deducao) / rbt12 * 100;
-  if (aliqEfetiva < 0) aliqEfetiva = aliqNominal;
-
-  let impostoAtual = fat * aliqEfetiva / 100;
-
-  // Portion of IBS/CBS within Simples (approx 26% of total Simples rate for commerce, 34% for services)
-  let pctTributos;
-  if (atividade === 'comercio' || atividade === 'industria') {
-    pctTributos = 0.28; // PIS+COFINS+ICMS portion
-  } else {
-    pctTributos = 0.34; // PIS+COFINS+ISS portion
-  }
-
-  let ibsCbsDentroSimples = impostoAtual * pctTributos;
-
-  // Option: IBS/CBS outside Simples
-  const CBS_RATE = 0.088;
-  const IBS_RATE = 0.177;
-  const TOTAL_IVA = CBS_RATE + IBS_RATE; // 26.5%
-
-  let ibsCbsFora = fat * TOTAL_IVA;
-  let creditoCompras = compras * TOTAL_IVA;
-  let ibsCbsLiquido = ibsCbsFora - creditoCompras;
-  if (ibsCbsLiquido < 0) ibsCbsLiquido = 0;
-
-  // Simples without IBS/CBS portion + IBS/CBS separate
-  let impostoForaSimples = (impostoAtual - ibsCbsDentroSimples) + ibsCbsLiquido;
-
-  // Credit transferred to B2B clients
-  let creditoTransfSimples = ibsCbsDentroSimples * 0.7; // reduced credit
-  let creditoTransfFora = fat * TOTAL_IVA; // full credit
-
-  let economia = impostoAtual - impostoForaSimples;
-  let beneficioCredito = (creditoTransfFora - creditoTransfSimples) * pctB2B;
-
-  let recomendacao, alertClass;
-  if (clientType === 'b2c' || pctB2B < 0.3) {
-    recomendacao = 'Permaneça no Simples tradicional. Seus clientes são consumidores finais e não aproveitam crédito.';
-    alertClass = 'alert-success';
-  } else if (economia > 0 || beneficioCredito > fat * 0.02) {
-    recomendacao = 'Considere recolher IBS/CBS por fora do DAS. Seus clientes B2B terão crédito integral, tornando você mais competitivo. Economia estimada + benefício de crédito pode superar R$ ' + formatBRL(economia + beneficioCredito) + '/mês.';
-    alertClass = 'alert-info';
-  } else {
-    recomendacao = 'O Simples tradicional parece mais vantajoso no seu caso. A economia com créditos não compensa a carga maior do IBS/CBS separado.';
-    alertClass = 'alert-success';
-  }
-
-  const el = document.getElementById('result-simples');
-  el.innerHTML = `
-    <h4>&#128202; Resultado da Simulação</h4>
-    <div class="result-grid">
-      <div class="result-item">
-        <div class="rl">Alíquota Efetiva Simples</div>
-        <div class="rv neutral">${formatPct(aliqEfetiva)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">Imposto Mensal (Simples Atual)</div>
-        <div class="rv">${formatBRL(impostoAtual)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">IBS/CBS se Recolher por Fora</div>
-        <div class="rv">${formatBRL(ibsCbsLiquido)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">Total c/ IBS/CBS Fora do DAS</div>
-        <div class="rv ${impostoForaSimples < impostoAtual ? 'positive' : 'negative'}">${formatBRL(impostoForaSimples)}</div>
-      </div>
-    </div>
-
-    <div class="result-compare">
-      <h5>Comparativo de Carga Tributária</h5>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Simples Atual (DAS completo)</span>
-          <span>${formatBRL(impostoAtual)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-before" style="width:${Math.min(100, (impostoAtual / Math.max(impostoAtual, impostoForaSimples)) * 100)}%"></div>
-        </div>
-      </div>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Simples + IBS/CBS por fora</span>
-          <span>${formatBRL(impostoForaSimples)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill ${impostoForaSimples <= impostoAtual ? 'fill-after-down' : 'fill-after-up'}" style="width:${Math.min(100, (impostoForaSimples / Math.max(impostoAtual, impostoForaSimples)) * 100)}%"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="result-compare" style="margin-top:12px;">
-      <h5>Crédito Transferido aos Clientes B2B</h5>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Crédito no Simples (reduzido)</span>
-          <span>${formatBRL(creditoTransfSimples)}/mês</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-before" style="width:${Math.min(100, (creditoTransfSimples / Math.max(creditoTransfSimples, creditoTransfFora)) * 100)}%"></div>
-        </div>
-      </div>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Crédito com IBS/CBS fora (integral)</span>
-          <span>${formatBRL(creditoTransfFora)}/mês</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-after-down" style="width:100%"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="result-alert ${alertClass}">
-      <span style="font-size:18px;">${alertClass === 'alert-success' ? '&#10004;' : '&#128161;'}</span>
-      <div><strong>Recomendação:</strong> ${recomendacao}</div>
-    </div>
-  `;
-  el.classList.add('show');
-}
-
-// ==================== LUCRO PRESUMIDO ====================
-function calcPresumido() {
-  const fat = parseCurrency(document.getElementById('lp-faturamento').value);
-  const atividade = document.getElementById('lp-atividade').value;
-  const compras = parseCurrency(document.getElementById('lp-compras').value);
-  const clientType = document.getElementById('lp-clientType').value;
-
-  if (!fat) { alert('Preencha o faturamento mensal.'); return; }
-
-  // Current: PIS 0.65% + COFINS 3% (cumulative) = 3.65%
-  const PIS_COFINS_ATUAL = 0.0365;
-  let impostoAtual = fat * PIS_COFINS_ATUAL;
-
-  // ISS/ICMS current rates
-  const issIcms = {
-    comercio: { tipo: 'ICMS', aliq: 0.18 },
-    servicos: { tipo: 'ISS', aliq: 0.05 },
-    industria: { tipo: 'ICMS', aliq: 0.18 },
-    'transporte-cargas': { tipo: 'ICMS', aliq: 0.12 },
-    'transporte-passageiros': { tipo: 'ISS', aliq: 0.05 },
-    'servicos-hospitalares': { tipo: 'ISS', aliq: 0.03 }
-  };
-
-  let dadosIssIcms = issIcms[atividade] || issIcms['comercio'];
-  let impostoIssIcms = fat * dadosIssIcms.aliq;
-  let totalAtual = impostoAtual + impostoIssIcms;
-
-  // New: IBS/CBS
-  const CBS_RATE = 0.088;
-  const IBS_RATE = 0.177;
-  const TOTAL_IVA = CBS_RATE + IBS_RATE;
-
-  // Check reduced rates
-  let aliqEfetiva = TOTAL_IVA;
-  let reducaoLabel = '';
-  if (atividade === 'servicos-hospitalares') {
-    aliqEfetiva = TOTAL_IVA * 0.4; // 60% reduction
-    reducaoLabel = ' (redução de 60%)';
-  } else if (atividade === 'transporte-cargas' || atividade === 'transporte-passageiros') {
-    aliqEfetiva = TOTAL_IVA * 0.4;
-    reducaoLabel = ' (redução de 60%)';
-  }
-
-  let ibsCbsBruto = fat * aliqEfetiva;
-  let creditoNovo = compras * aliqEfetiva;
-  let ibsCbsLiquido = Math.max(0, ibsCbsBruto - creditoNovo);
-
-  let diferenca = ibsCbsLiquido - totalAtual;
-  let pctMudanca = totalAtual > 0 ? (diferenca / totalAtual * 100) : 0;
-
-  const el = document.getElementById('result-presumido');
-  el.innerHTML = `
-    <h4>&#128202; Resultado da Simulação</h4>
-    <div class="result-grid">
-      <div class="result-item">
-        <div class="rl">PIS/COFINS Atual (3,65%)</div>
-        <div class="rv">${formatBRL(impostoAtual)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">${dadosIssIcms.tipo} Atual (${formatPct(dadosIssIcms.aliq * 100)})</div>
-        <div class="rv">${formatBRL(impostoIssIcms)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">Total Atual (PIS+COFINS+${dadosIssIcms.tipo})</div>
-        <div class="rv">${formatBRL(totalAtual)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">IBS/CBS Reforma${reducaoLabel}</div>
-        <div class="rv ${ibsCbsLiquido < totalAtual ? 'positive' : 'negative'}">${formatBRL(ibsCbsLiquido)}</div>
-      </div>
-    </div>
-
-    <div class="result-compare">
-      <h5>Antes vs. Depois da Reforma</h5>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Regime Atual (PIS+COFINS+${dadosIssIcms.tipo})</span>
-          <span>${formatBRL(totalAtual)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-before" style="width:${Math.min(100, (totalAtual / Math.max(totalAtual, ibsCbsLiquido)) * 100)}%"></div>
-        </div>
-      </div>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>IBS + CBS (líquido de créditos)</span>
-          <span>${formatBRL(ibsCbsLiquido)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill ${ibsCbsLiquido <= totalAtual ? 'fill-after-down' : 'fill-after-up'}" style="width:${Math.min(100, (ibsCbsLiquido / Math.max(totalAtual, ibsCbsLiquido)) * 100)}%"></div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:12px;font-size:14px;">
-        <strong style="color:${diferenca > 0 ? 'var(--danger)' : 'var(--success)'}">
-          ${diferenca > 0 ? '&#9650; Aumento' : '&#9660; Redução'} de ${formatBRL(Math.abs(diferenca))}/mês (${formatPct(Math.abs(pctMudanca))})
-        </strong>
-      </div>
-    </div>
-
-    <div class="result-alert ${diferenca > 0 ? 'alert-warning' : 'alert-success'}">
-      <span style="font-size:18px;">${diferenca > 0 ? '&#9888;' : '&#10004;'}</span>
-      <div>
-        ${diferenca > 0
-          ? '<strong>Atenção:</strong> Sua carga tributária tende a aumentar com a reforma. Avalie migrar para o Lucro Real para aproveitar créditos amplos, ou revise sua cadeia de fornecedores para maximizar créditos de IBS/CBS.'
-          : '<strong>Boa notícia:</strong> O crédito amplo do IBS/CBS compensa a alíquota maior. Sua empresa tende a pagar menos tributos sobre consumo com a reforma.'
-        }
-      </div>
-    </div>
-  `;
-  el.classList.add('show');
-}
-
-// ==================== LUCRO REAL ====================
-function calcReal() {
-  const fat = parseCurrency(document.getElementById('lr-faturamento').value);
-  const atividade = document.getElementById('lr-atividade').value;
-  const compras = parseCurrency(document.getElementById('lr-compras').value);
-  const despesas = parseCurrency(document.getElementById('lr-despesas').value);
-  const creditosPct = parseFloat(document.getElementById('lr-creditos-pct').value) / 100;
-  const reducao = parseFloat(document.getElementById('lr-reducao').value) / 100;
-
-  if (!fat) { alert('Preencha o faturamento mensal.'); return; }
-
-  // Current: PIS 1.65% + COFINS 7.6% (non-cumulative) = 9.25%
-  const PIS_COFINS_ATUAL = 0.0925;
-  let pisCofinsDebito = fat * PIS_COFINS_ATUAL;
-  let pisCofinsCredito = (compras + despesas) * PIS_COFINS_ATUAL * creditosPct;
-  let pisCofinsLiquido = Math.max(0, pisCofinsDebito - pisCofinsCredito);
-
-  // ICMS (commerce/industry) or ISS (services)
-  let icmsIss, icmsIssLabel;
-  if (atividade === 'servicos') {
-    icmsIss = fat * 0.05;
-    icmsIssLabel = 'ISS (5%)';
-  } else {
-    icmsIss = fat * 0.18;
-    let icmsCredito = compras * 0.18 * 0.8;
-    icmsIss = Math.max(0, icmsIss - icmsCredito);
-    icmsIssLabel = 'ICMS líquido (~18%)';
-  }
-  let totalAtual = pisCofinsLiquido + icmsIss;
-
-  // New: IBS/CBS with full credit
-  const CBS_RATE = 0.088;
-  const IBS_RATE = 0.177;
-  const TOTAL_IVA = CBS_RATE + IBS_RATE;
-
-  let aliqEfetiva = TOTAL_IVA * (1 - reducao);
-
-  let ibsCbsDebito = fat * aliqEfetiva;
-  let ibsCbsCredito = (compras + despesas) * aliqEfetiva; // full credit on everything
-  let ibsCbsLiquido = Math.max(0, ibsCbsDebito - ibsCbsCredito);
-
-  let diferenca = ibsCbsLiquido - totalAtual;
-  let pctMudanca = totalAtual > 0 ? (diferenca / totalAtual * 100) : 0;
-
-  const el = document.getElementById('result-real');
-  el.innerHTML = `
-    <h4>&#128202; Resultado da Simulação</h4>
-    <div class="result-grid">
-      <div class="result-item">
-        <div class="rl">PIS/COFINS Líquido Atual</div>
-        <div class="rv">${formatBRL(pisCofinsLiquido)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">${icmsIssLabel}</div>
-        <div class="rv">${formatBRL(icmsIss)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">Total Atual</div>
-        <div class="rv">${formatBRL(totalAtual)}</div>
-      </div>
-      <div class="result-item">
-        <div class="rl">IBS/CBS Líquido (Reforma)${reducao > 0 ? ' c/ redução' : ''}</div>
-        <div class="rv ${ibsCbsLiquido < totalAtual ? 'positive' : 'negative'}">${formatBRL(ibsCbsLiquido)}</div>
-      </div>
-    </div>
-
-    <div class="result-compare">
-      <h5>Impacto da Reforma no Lucro Real</h5>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>PIS + COFINS + ${atividade === 'servicos' ? 'ISS' : 'ICMS'} (Atual)</span>
-          <span>${formatBRL(totalAtual)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-before" style="width:${Math.min(100, (totalAtual / Math.max(totalAtual, ibsCbsLiquido)) * 100)}%"></div>
-        </div>
-      </div>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>IBS + CBS com Crédito Amplo</span>
-          <span>${formatBRL(ibsCbsLiquido)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill ${ibsCbsLiquido <= totalAtual ? 'fill-after-down' : 'fill-after-up'}" style="width:${Math.min(100, (ibsCbsLiquido / Math.max(totalAtual, ibsCbsLiquido)) * 100)}%"></div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:12px;font-size:14px;">
-        <strong style="color:${diferenca > 0 ? 'var(--danger)' : 'var(--success)'}">
-          ${diferenca > 0 ? '&#9650; Aumento' : '&#9660; Redução'} de ${formatBRL(Math.abs(diferenca))}/mês (${formatPct(Math.abs(pctMudanca))})
-        </strong>
-      </div>
-    </div>
-
-    <div class="result-compare" style="margin-top:12px;">
-      <h5>Detalhamento dos Créditos</h5>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Créditos PIS/COFINS Hoje</span>
-          <span>${formatBRL(pisCofinsCredito)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-before" style="width:${Math.min(100, (pisCofinsCredito / Math.max(pisCofinsCredito, ibsCbsCredito)) * 100)}%"></div>
-        </div>
-      </div>
-      <div class="compare-bar-wrap">
-        <div class="compare-bar-label">
-          <span>Créditos IBS/CBS (Amplo)</span>
-          <span>${formatBRL(ibsCbsCredito)}</span>
-        </div>
-        <div class="compare-bar">
-          <div class="compare-bar-fill fill-after-down" style="width:100%"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="result-alert ${diferenca > 0 ? 'alert-warning' : 'alert-success'}">
-      <span style="font-size:18px;">${diferenca > 0 ? '&#9888;' : '&#10004;'}</span>
-      <div>
-        ${diferenca > 0
-          ? '<strong>Ponto de atenção:</strong> Mesmo com crédito amplo, a alíquota de 26,5% pode resultar em carga maior, especialmente para serviços com poucos insumos. Mapeie todos os custos creditáveis: energia, aluguel, tecnologia, telefonia, etc.'
-          : '<strong>Cenário favorável:</strong> O crédito amplo do IBS/CBS (que inclui aluguel, energia, serviços) tende a reduzir sua carga. O Lucro Real é o regime que mais se beneficia da reforma.'
-        }
-      </div>
-    </div>
-  `;
-  el.classList.add('show');
-}
-
-// ==================== CST / CCLASSTRIB DATA ====================
-// P=Padrão, R6=Reduzida60%, R4=Reduzida40%, I=Isento, M=Monofásico, S=Seletivo
-function _p(ncm,desc,cc){return{ncm,desc,cclass:cc,classif:'Tributação Padrão',cst:'00',cbs:'0,90%',ibs:'0,10%',total:'1,00%',categ:'padrao'}}
-function _r6(ncm,desc,cc){return{ncm,desc,cclass:cc,classif:'Alíquota Reduzida 60%',cst:'04',cbs:'0,36%',ibs:'0,04%',total:'0,40%',categ:'reduzida'}}
-function _r4(ncm,desc,cc){return{ncm,desc,cclass:cc,classif:'Alíquota Reduzida 40%',cst:'05',cbs:'0,54%',ibs:'0,06%',total:'0,60%',categ:'reduzida'}}
-function _i(ncm,desc,cc,cl,cs){return{ncm,desc,cclass:cc,classif:cl||'Isento - Cesta Básica Nacional',cst:cs||'06',cbs:'0,00%',ibs:'0,00%',total:'0,00%',categ:'isento'}}
-function _m(ncm,desc,cc,un,cs){return{ncm,desc,cclass:cc,classif:'Monofásico - '+(cs==='02'?'Combustíveis':'Medicamentos'),cst:cs||'02',cbs:'R$/'+un,ibs:'R$/'+un,total:'Fixa/'+un,categ:'monofasico'}}
-function _s(ncm,desc,cc,tipo){return{ncm,desc,cclass:cc,classif:'Imposto Seletivo - '+tipo,cst:tipo==='Recursos Naturais'?'51':'50',cbs:'0,90%+IS',ibs:'0,10%+IS',total:'IVA+IS',categ:'seletivo'}}
-
-const cstData = [
-  // =====================================================
-  // TRIBUTAÇÃO PADRÃO (26,5%) — Teste 2026: 1,00%
-  // =====================================================
-  // -- Eletrônicos e Informática --
-  _p('8471.30.19','Notebooks e laptops','101.01.01'),
-  _p('8471.30.11','Computadores desktop','101.01.02'),
-  _p('8517.13.00','Smartphones e telefones celulares','101.01.03'),
-  _p('8528.72.00','Televisores LED/OLED','101.01.04'),
-  _p('8528.52.00','Monitores de vídeo para PC','101.01.05'),
-  _p('8443.32.99','Impressoras e multifuncionais','101.01.06'),
-  _p('8471.60.52','Teclados para computador','101.01.07'),
-  _p('8471.60.53','Mouse e dispositivos apontadores','101.01.08'),
-  _p('8471.70.12','Discos rígidos (HD/SSD)','101.01.09'),
-  _p('8523.51.10','Pen drives e memórias flash','101.01.10'),
-  _p('8517.62.59','Roteadores e switches de rede','101.01.11'),
-  _p('8517.62.39','Modems e equipamentos de telecomunicação','101.01.12'),
-  _p('8525.80.29','Câmeras fotográficas digitais','101.01.13'),
-  _p('8519.81.90','Caixas de som e alto-falantes','101.01.14'),
-  _p('8518.30.00','Fones de ouvido e headsets','101.01.15'),
-  _p('8471.41.10','Servidores e estações de trabalho','101.01.16'),
-  _p('8443.31.99','Copiadoras e scanners','101.01.17'),
-  _p('8528.71.00','Projetores multimídia','101.01.18'),
-  _p('8504.40.22','Fontes de alimentação e no-breaks','101.01.19'),
-  _p('8473.30.49','Gabinetes e peças para computador','101.01.20'),
-  _p('8517.14.00','Tablets e dispositivos portáteis','101.01.21'),
-  _p('8519.89.90','Aparelhos de som e reprodução áudio','101.01.22'),
-  _p('9504.50.00','Consoles de videogame','101.01.23'),
-  _p('8525.89.29','Webcams e câmeras de segurança IP','101.01.24'),
-  _p('9030.39.29','Multímetros e instrumentos de medição eletrônica','101.01.25'),
-
-  // -- Móveis e Decoração --
-  _p('9403.30.00','Móveis de madeira para escritório','101.02.01'),
-  _p('9403.20.00','Móveis de metal','101.02.02'),
-  _p('9401.80.00','Cadeiras e assentos diversos','101.02.03'),
-  _p('9401.30.90','Cadeiras giratórias (escritório)','101.02.04'),
-  _p('9403.60.00','Móveis de madeira para cozinha','101.02.05'),
-  _p('9403.50.00','Móveis de madeira para quarto','101.02.06'),
-  _p('9403.40.00','Móveis de madeira para cozinha (armários)','101.02.07'),
-  _p('9403.10.00','Móveis de metal para escritório','101.02.08'),
-  _p('9404.21.00','Colchões de espuma','101.02.09'),
-  _p('9404.29.00','Colchões de mola','101.02.10'),
-  _p('6302.60.00','Toalhas de banho e rosto','101.02.11'),
-  _p('6302.31.00','Roupa de cama (lençóis) de algodão','101.02.12'),
-  _p('6911.10.10','Louça de mesa e cozinha (porcelana)','101.02.13'),
-  _p('7013.49.00','Copos e taças de vidro','101.02.14'),
-  _p('7323.93.00','Panelas e utensílios de aço inox','101.02.15'),
-  _p('7615.19.00','Panelas e utensílios de alumínio','101.02.16'),
-  _p('9405.42.00','Luminárias e abajures LED','101.02.17'),
-  _p('5703.30.00','Tapetes e carpetes sintéticos','101.02.18'),
-
-  // -- Vestuário e Calçados --
-  _p('6204.62.00','Calças femininas de algodão','101.03.01'),
-  _p('6203.42.00','Calças masculinas de algodão','101.03.02'),
-  _p('6402.99.90','Calçados diversos','101.03.03'),
-  _p('6109.10.00','Camisetas de algodão (T-shirts)','101.03.04'),
-  _p('6105.10.00','Camisas polo masculinas','101.03.05'),
-  _p('6106.10.00','Camisas e blusas femininas','101.03.06'),
-  _p('6104.63.00','Calças femininas de fibra sintética','101.03.07'),
-  _p('6103.43.00','Calças masculinas de fibra sintética','101.03.08'),
-  _p('6110.20.00','Suéteres e moletons de algodão','101.03.09'),
-  _p('6110.30.00','Suéteres de fibra sintética','101.03.10'),
-  _p('6201.13.00','Casacos e jaquetas masculinas','101.03.11'),
-  _p('6202.13.00','Casacos e jaquetas femininas','101.03.12'),
-  _p('6205.20.00','Camisas sociais masculinas de algodão','101.03.13'),
-  _p('6104.44.00','Vestidos femininos','101.03.14'),
-  _p('6204.52.00','Saias femininas de algodão','101.03.15'),
-  _p('6107.11.00','Cuecas e roupas íntimas masculinas','101.03.16'),
-  _p('6108.21.00','Calcinhas e roupas íntimas femininas','101.03.17'),
-  _p('6108.31.00','Pijamas femininos','101.03.18'),
-  _p('6112.41.00','Biquínis e maiôs femininos','101.03.19'),
-  _p('6112.31.00','Roupas de banho masculinas','101.03.20'),
-  _p('6116.10.00','Luvas de malha','101.03.21'),
-  _p('6505.00.29','Bonés e chapéus','101.03.22'),
-  _p('6401.10.00','Calçados de borracha (botas de chuva)','101.03.23'),
-  _p('6403.99.90','Calçados de couro','101.03.24'),
-  _p('6404.19.00','Tênis e calçados esportivos','101.03.25'),
-  _p('6403.51.00','Sapatos sociais de couro','101.03.26'),
-  _p('6402.19.00','Sandálias e chinelos','101.03.27'),
-
-  // -- Higiene, Limpeza e Cosméticos --
-  _p('3304.99.10','Cosméticos e produtos de beleza','101.04.01'),
-  _p('3401.11.90','Sabões e detergentes','101.04.02'),
-  _p('3305.10.00','Shampoos para cabelo','101.04.03'),
-  _p('3305.90.00','Condicionadores e máscaras capilares','101.04.04'),
-  _p('3306.10.00','Creme dental (pasta de dente)','101.04.05'),
-  _p('3307.20.10','Desodorantes corporais','101.04.06'),
-  _p('3307.30.00','Sais e preparações para banho','101.04.07'),
-  _p('3304.10.00','Batons e maquiagem labial','101.04.08'),
-  _p('3304.20.10','Maquiagem para olhos (rímel, sombra)','101.04.09'),
-  _p('3304.91.00','Pó facial e base de maquiagem','101.04.10'),
-  _p('3402.20.00','Detergentes e lava-louças','101.04.11'),
-  _p('3402.90.39','Desinfetantes e água sanitária','101.04.12'),
-  _p('3405.10.00','Polidores e ceras para piso','101.04.13'),
-  _p('3401.30.00','Sabonete líquido','101.04.14'),
-  _p('4818.10.00','Papel higiênico','101.04.15'),
-  _p('4818.20.00','Lenços de papel','101.04.16'),
-  _p('4818.40.10','Fraldas descartáveis','101.04.17'),
-  _p('9603.21.00','Escovas de dente','101.04.18'),
-  _p('3307.10.00','Produtos para barbear (cremes e espumas)','101.04.19'),
-
-  // -- Construção Civil e Materiais --
-  _p('7308.90.90','Estruturas de ferro/aço para construção','101.05.01'),
-  _p('6810.11.00','Blocos e tijolos de concreto','101.05.02'),
-  _p('6901.00.00','Tijolos cerâmicos refratários','101.05.03'),
-  _p('6904.10.00','Tijolos cerâmicos comuns','101.05.04'),
-  _p('6907.21.00','Pisos cerâmicos (porcelanato)','101.05.05'),
-  _p('6907.22.00','Revestimentos cerâmicos para parede','101.05.06'),
-  _p('2523.29.10','Cimento Portland','101.05.07'),
-  _p('7210.49.10','Telhas de aço galvanizado','101.05.08'),
-  _p('6811.40.00','Telhas de fibrocimento','101.05.09'),
-  _p('7009.91.00','Espelhos de vidro','101.05.10'),
-  _p('7005.29.00','Vidros planos (float glass)','101.05.11'),
-  _p('3925.20.00','Portas e janelas de plástico (PVC)','101.05.12'),
-  _p('7610.10.00','Portas e janelas de alumínio','101.05.13'),
-  _p('4411.14.00','MDF e painéis de fibra de madeira','101.05.14'),
-  _p('3214.10.10','Massa corrida e massas PVA','101.05.15'),
-  _p('3208.10.10','Tintas e vernizes à base de poliéster','101.05.16'),
-  _p('3209.10.10','Tintas acrílicas para parede','101.05.17'),
-  _p('3916.20.00','Tubos e conexões de PVC','101.05.18'),
-  _p('7307.19.90','Conexões de ferro/aço (cotovelos, luvas)','101.05.19'),
-  _p('7318.15.00','Parafusos e porcas de ferro/aço','101.05.20'),
-  _p('8302.41.00','Fechaduras e ferragens para portas','101.05.21'),
-  _p('6808.00.00','Placas de gesso e drywall','101.05.22'),
-  _p('2505.10.00','Areia natural para construção','101.05.23'),
-  _p('2517.10.00','Brita e pedra britada','101.05.24'),
-
-  // -- Eletrodomésticos --
-  _p('8418.10.00','Geladeiras e refrigeradores','101.06.01'),
-  _p('8450.11.00','Máquinas de lavar roupa','101.06.02'),
-  _p('8422.11.00','Máquinas de lavar louça','101.06.03'),
-  _p('8516.60.00','Fogões e fornos elétricos','101.06.04'),
-  _p('7321.11.00','Fogões a gás','101.06.05'),
-  _p('8509.40.00','Liquidificadores e processadores','101.06.06'),
-  _p('8516.79.90','Cafeteiras elétricas','101.06.07'),
-  _p('8516.10.00','Aquecedores elétricos de água','101.06.08'),
-  _p('8414.51.10','Ventiladores de mesa e parede','101.06.09'),
-  _p('8415.10.19','Aparelhos de ar condicionado split','101.06.10'),
-  _p('8516.31.00','Secadores de cabelo','101.06.11'),
-  _p('8516.40.00','Ferros de passar roupa','101.06.12'),
-  _p('8509.80.90','Aspiradores de pó','101.06.13'),
-  _p('8419.81.10','Micro-ondas','101.06.14'),
-  _p('8418.50.10','Freezers horizontais e verticais','101.06.15'),
-  _p('8450.20.90','Secadoras de roupa','101.06.16'),
-  _p('8516.72.00','Torradeiras elétricas','101.06.17'),
-  _p('8509.40.20','Batedeiras planetárias','101.06.18'),
-  _p('8421.12.90','Centrífugas e spin dryers','101.06.19'),
-  _p('8516.50.00','Fornos micro-ondas com grill','101.06.20'),
-
-  // -- Automotivo --
-  _p('8708.99.90','Peças e acessórios automotivos','101.07.01'),
-  _p('4011.10.00','Pneus novos para automóveis','101.07.02'),
-  _p('8703.22.10','Automóveis de passageiros 1000cc a 1500cc','101.07.03'),
-  _p('8703.23.10','Automóveis de passageiros 1500cc a 2000cc','101.07.04'),
-  _p('8711.20.20','Motocicletas 150cc a 250cc','101.07.05'),
-  _p('8711.30.00','Motocicletas 250cc a 500cc','101.07.06'),
-  _p('8704.21.10','Caminhões leves (até 5 toneladas)','101.07.07'),
-  _p('8704.22.10','Caminhões pesados (acima 20 toneladas)','101.07.08'),
-  _p('8702.10.00','Ônibus e micro-ônibus','101.07.09'),
-  _p('8708.30.19','Freios e peças de freio','101.07.10'),
-  _p('8708.40.90','Câmbio e peças de transmissão','101.07.11'),
-  _p('8708.80.00','Amortecedores e peças de suspensão','101.07.12'),
-  _p('8507.60.00','Baterias de lítio para veículos','101.07.13'),
-  _p('8507.10.00','Baterias de chumbo-ácido (automóveis)','101.07.14'),
-  _p('8421.23.00','Filtros de óleo para motores','101.07.15'),
-  _p('2710.19.91','Óleos lubrificantes automotivos','101.07.16'),
-  _p('4011.20.90','Pneus para caminhões e ônibus','101.07.17'),
-  _p('8703.80.00','Veículos elétricos e híbridos','101.07.18'),
-  _p('8711.60.00','Motocicletas elétricas','101.07.19'),
-
-  // -- Alimentos e Bebidas (Padrão) --
-  _p('2105.00.10','Sorvetes e picolés','101.08.01'),
-  _p('1806.32.10','Chocolates em barra e bombons','101.08.02'),
-  _p('1806.90.00','Achocolatados e preparações de cacau','101.08.03'),
-  _p('1704.90.90','Balas, caramelos e confeitos','101.08.04'),
-  _p('1905.31.00','Biscoitos e bolachas doces','101.08.05'),
-  _p('1905.32.00','Waffles e wafers','101.08.06'),
-  _p('2004.10.00','Batatas fritas congeladas','101.08.07'),
-  _p('1601.00.00','Embutidos (linguiça, salsicha, salame)','101.08.08'),
-  _p('2103.90.91','Molhos e condimentos prontos','101.08.09'),
-  _p('2103.10.10','Molho de soja (shoyu)','101.08.10'),
-  _p('2103.20.10','Ketchup e mostarda','101.08.11'),
-  _p('2104.10.11','Sopas e caldos prontos','101.08.12'),
-  _p('1604.14.10','Atum em conserva','101.08.13'),
-  _p('2002.90.00','Molho de tomate e extratos','101.08.14'),
-  _p('0406.10.10','Queijo mussarela','101.08.15'),
-  _p('0406.90.90','Queijos diversos (prato, minas, etc.)','101.08.16'),
-  _p('0405.10.00','Manteiga','101.08.17'),
-  _p('0403.10.00','Iogurtes','101.08.18'),
-  _p('0901.21.00','Café torrado em grãos','101.08.19'),
-  _p('1704.10.00','Goma de mascar (chicletes)','101.08.20'),
-  _p('2201.10.00','Água mineral engarrafada','101.08.21'),
-  _p('2009.19.00','Sucos industrializados (com adição de açúcar)','101.08.22'),
-
-  // -- Papel, Embalagens e Escritório --
-  _p('4802.56.10','Papel sulfite A4','101.09.01'),
-  _p('4819.10.00','Caixas de papelão ondulado','101.09.02'),
-  _p('4819.20.00','Caixas e cartonagens dobráveis','101.09.03'),
-  _p('3923.30.00','Garrafas e frascos de plástico (PET)','101.09.04'),
-  _p('3923.21.90','Sacolas e sacos de plástico','101.09.05'),
-  _p('7612.90.19','Latas de alumínio para bebidas','101.09.06'),
-  _p('9608.10.00','Canetas esferográficas','101.09.07'),
-  _p('8304.00.00','Classificadores e fichários de metal','101.09.08'),
-  _p('3926.10.00','Material escolar de plástico','101.09.09'),
-  _p('4820.10.00','Cadernos e blocos de anotações','101.09.10'),
-
-  // -- Máquinas e Equipamentos Industriais --
-  _p('8428.33.00','Esteiras transportadoras','101.10.01'),
-  _p('8422.30.29','Máquinas de embalar e empacotar','101.10.02'),
-  _p('8438.10.00','Máquinas para panificação e massas','101.10.03'),
-  _p('8479.89.99','Máquinas e aparelhos mecânicos diversos','101.10.04'),
-  _p('8413.70.90','Bombas centrífugas industriais','101.10.05'),
-  _p('8414.80.19','Compressores de ar industriais','101.10.06'),
-  _p('8501.52.90','Motores elétricos trifásicos','101.10.07'),
-  _p('8481.80.99','Válvulas e torneiras industriais','101.10.08'),
-  _p('8424.89.90','Pulverizadores e aspersores industriais','101.10.09'),
-  _p('8462.21.00','Máquinas de dobrar e estampar metal','101.10.10'),
-
-  // -- Ferramentas e Ferragens --
-  _p('8203.20.90','Alicates e ferramentas manuais','101.11.01'),
-  _p('8205.59.00','Ferramentas manuais diversas','101.11.02'),
-  _p('8467.21.00','Furadeiras elétricas portáteis','101.11.03'),
-  _p('8467.11.10','Parafusadeiras a bateria','101.11.04'),
-  _p('8202.31.00','Lâminas de serra circular','101.11.05'),
-  _p('8205.40.00','Chaves de fenda e Phillips','101.11.06'),
-  _p('8204.11.00','Chaves de boca e combinadas','101.11.07'),
-  _p('8207.50.19','Brocas para furadeira','101.11.08'),
-  _p('8211.92.10','Estiletes e lâminas de corte','101.11.09'),
-  _p('7326.90.90','Correntes e cabos de aço','101.11.10'),
-
-  // -- Brinquedos e Esportes --
-  _p('9503.00.99','Brinquedos diversos','101.12.01'),
-  _p('9503.00.10','Brinquedos com rodas (triciclos, etc.)','101.12.02'),
-  _p('9506.62.00','Bolas de futebol e esportes','101.12.03'),
-  _p('9506.91.00','Equipamentos de ginástica e musculação','101.12.04'),
-  _p('8712.00.10','Bicicletas','101.12.05'),
-  _p('9506.11.00','Esquis e equipamentos de neve','101.12.06'),
-  _p('9506.29.00','Pranchas de surf e esportes aquáticos','101.12.07'),
-  _p('9504.30.99','Jogos de mesa e tabuleiro','101.12.08'),
-
-  // -- Têxteis e Tecidos --
-  _p('5209.42.00','Tecido denim (jeans)','101.13.01'),
-  _p('5208.32.00','Tecido de algodão estampado','101.13.02'),
-  _p('5407.52.00','Tecido de poliéster','101.13.03'),
-  _p('5512.11.00','Tecido de fibra sintética','101.13.04'),
-  _p('6001.92.00','Malha de algodão (tecido circular)','101.13.05'),
-  _p('5903.20.00','Tecido de poliuretano (couro sintético)','101.13.06'),
-
-  // -- Plásticos e Borrachas --
-  _p('3917.32.90','Mangueiras de plástico','101.14.01'),
-  _p('3920.20.19','Filmes e chapas de polipropileno','101.14.02'),
-  _p('3921.19.90','Chapas e placas de espuma','101.14.03'),
-  _p('4009.42.00','Mangueiras de borracha reforçadas','101.14.04'),
-  _p('4016.93.00','Juntas e vedações de borracha','101.14.05'),
-
-  // -- Químicos e Produtos Industriais --
-  _p('2815.11.00','Soda cáustica (hidróxido de sódio)','101.15.01'),
-  _p('2806.10.20','Ácido clorídrico (muriático)','101.15.02'),
-  _p('3901.10.10','Polietileno de alta densidade (PEAD)','101.15.03'),
-  _p('3902.10.20','Polipropileno granulado','101.15.04'),
-  _p('3907.61.00','PET (politereftalato de etileno)','101.15.05'),
-  _p('2804.29.10','Gases industriais (nitrogênio, oxigênio)','101.15.06'),
-
-  // -- Joalheria e Relógios --
-  _p('7113.19.00','Joias de ouro e prata','101.16.01'),
-  _p('7117.19.00','Bijuterias','101.16.02'),
-  _p('9101.19.00','Relógios de pulso com caixa de metal precioso','101.16.03'),
-  _p('9102.19.00','Relógios de pulso diversos','101.16.04'),
-
-  // -- Óptica e Fotografia --
-  _p('9001.50.00','Lentes para óculos de grau','101.17.01'),
-  _p('9003.19.00','Armações para óculos','101.17.02'),
-  _p('9004.10.00','Óculos de sol','101.17.03'),
-
-  // -- Pet e Veterinária --
-  _p('2309.10.00','Ração para cães e gatos','101.18.01'),
-  _p('2309.90.90','Petiscos e snacks para animais','101.18.02'),
-  _p('3004.90.49','Medicamentos veterinários','101.18.03'),
-
-  // =====================================================
-  // ALÍQUOTA REDUZIDA 60% (10,6%) — Teste 2026: 0,40%
-  // =====================================================
-  // -- Saúde e Medicamentos --
-  _r6('3004.90.99','Medicamentos para saúde humana','102.01.01'),
-  _r6('3004.90.29','Medicamentos à base de vitaminas','102.01.02'),
-  _r6('3004.90.79','Medicamentos à base de hormônios','102.01.03'),
-  _r6('3004.20.99','Antibióticos para uso humano','102.01.04'),
-  _r6('3004.50.90','Medicamentos com provitaminas','102.01.05'),
-  _r6('3005.10.90','Curativos e bandagens adesivas','102.01.06'),
-  _r6('3005.90.20','Gazes e algodão hidrófilo','102.01.07'),
-  _r6('9018.90.99','Equipamentos médico-hospitalares','102.01.08'),
-  _r6('9018.31.19','Seringas descartáveis','102.01.09'),
-  _r6('9018.32.19','Agulhas descartáveis','102.01.10'),
-  _r6('9018.39.29','Cateteres e cânulas','102.01.11'),
-  _r6('9021.10.10','Próteses e dispositivos ortopédicos','102.01.12'),
-  _r6('9021.21.10','Próteses dentárias','102.01.13'),
-  _r6('9021.31.10','Próteses articulares (quadril, joelho)','102.01.14'),
-  _r6('9021.40.00','Aparelhos auditivos','102.01.15'),
-  _r6('9018.11.00','Eletrocardiógrafos','102.01.16'),
-  _r6('9022.14.19','Aparelhos de raio-X médico','102.01.17'),
-  _r6('9018.19.80','Aparelhos de diagnóstico (ultrassom, etc.)','102.01.18'),
-  _r6('9019.20.10','Aparelhos de oxigenoterapia','102.01.19'),
-  _r6('9402.90.20','Macas e camas hospitalares','102.01.20'),
-  _r6('4015.12.00','Luvas cirúrgicas de borracha','102.01.21'),
-  _r6('6307.90.10','Máscaras cirúrgicas descartáveis','102.01.22'),
-  _r6('9018.50.00','Aparelhos de oftalmologia','102.01.23'),
-  _r6('9027.80.99','Aparelhos para análise laboratorial','102.01.24'),
-
-  // -- Educação --
-  _r6('4901.99.00','Livros didáticos e educacionais','102.02.01'),
-  _r6('4903.00.00','Álbuns e livros de ilustrações infantis','102.02.02'),
-  _r6('4905.99.00','Mapas e atlas geográficos','102.02.03'),
-  _r6('4820.20.00','Cadernos escolares','102.02.04'),
-
-  // -- Alimentos (redução 60%) --
-  _r6('0401.10.10','Leite UHT e pasteurizado','102.03.01'),
-  _r6('1905.90.90','Pães e produtos de panificação','102.03.02'),
-  _r6('0207.14.00','Frango e aves (cortes congelados)','102.03.03'),
-  _r6('0207.12.00','Frango inteiro congelado','102.03.04'),
-  _r6('0203.29.00','Carne suína congelada','102.03.05'),
-  _r6('0302.89.99','Peixes frescos diversos','102.03.06'),
-  _r6('0303.89.99','Peixes congelados diversos','102.03.07'),
-  _r6('0402.21.10','Leite em pó integral','102.03.08'),
-  _r6('0402.10.10','Leite em pó desnatado','102.03.09'),
-  _r6('1901.10.20','Fórmulas infantis para lactentes','102.03.10'),
-  _r6('0714.10.00','Mandioca (aipim/macaxeira)','102.03.11'),
-  _r6('0701.90.00','Batata inglesa','102.03.12'),
-  _r6('0703.10.19','Cebola','102.03.13'),
-  _r6('0702.00.00','Tomate in natura','102.03.14'),
-  _r6('0805.10.00','Laranja fresca','102.03.15'),
-  _r6('0803.10.00','Banana fresca','102.03.16'),
-  _r6('0804.30.00','Abacaxi fresco','102.03.17'),
-  _r6('0807.11.00','Melancia fresca','102.03.18'),
-  _r6('0808.10.00','Maçã fresca','102.03.19'),
-  _r6('0709.20.00','Aspargos frescos','102.03.20'),
-  _r6('0704.10.00','Couve-flor e brócolis','102.03.21'),
-  _r6('0705.11.00','Alface fresca','102.03.22'),
-  _r6('1005.90.10','Milho em grão','102.03.23'),
-
-  // -- Agropecuário --
-  _r6('8701.20.00','Tratores agrícolas','102.04.01'),
-  _r6('3102.10.10','Fertilizantes (ureia)','102.04.02'),
-  _r6('3103.11.10','Superfosfatos para adubação','102.04.03'),
-  _r6('3104.20.10','Cloreto de potássio (fertilizante)','102.04.04'),
-  _r6('3105.20.00','Fertilizantes NPK','102.04.05'),
-  _r6('8432.29.00','Semeadoras e plantadoras agrícolas','102.04.06'),
-  _r6('8433.51.00','Colheitadeiras de grãos','102.04.07'),
-  _r6('8436.10.00','Máquinas para preparação de ração animal','102.04.08'),
-  _r6('0106.19.00','Animais vivos para reprodução','102.04.09'),
-  _r6('1201.90.00','Soja em grão','102.04.10'),
-  _r6('1001.99.00','Trigo em grão','102.04.11'),
-
-  // -- Transporte coletivo --
-  _r6('8702.10.00','Ônibus para transporte público','102.05.01'),
-  _r6('8605.00.10','Vagões de passageiros para metrô/trem','102.05.02'),
-
-  // -- Acessibilidade --
-  _r6('8713.10.00','Cadeiras de rodas sem motor','102.06.01'),
-  _r6('8713.90.00','Cadeiras de rodas motorizadas','102.06.02'),
-
-  // =====================================================
-  // ALÍQUOTA REDUZIDA 40% (15,9%) — Teste 2026: 0,60%
-  // =====================================================
-  _r4('3808.91.99','Defensivos agrícolas (agrotóxicos)','103.01.01'),
-  _r4('3808.92.99','Fungicidas agrícolas','103.01.02'),
-  _r4('3808.93.29','Herbicidas agrícolas','103.01.03'),
-  _r4('2106.90.10','Suplementos alimentares e vitaminas','103.02.01'),
-  _r4('2106.90.30','Preparações alimentícias proteicas (whey)','103.02.02'),
-  _r4('3006.60.00','Preparações contraceptivas (gel/química)','103.03.01'),
-  _r4('3006.70.00','Preparações em gel para medicina/odontologia','103.03.02'),
-  _r4('3002.20.29','Vacinas para uso humano','103.04.01'),
-  _r4('3002.13.00','Produtos imunológicos (hemoderivados)','103.04.02'),
-  _r4('9019.10.00','Aparelhos de mecanoterapia e massagem','103.05.01'),
-  _r4('9506.99.00','Equipamentos para reabilitação física','103.05.02'),
-  _r4('8421.21.00','Aparelhos para filtrar e purificar água','103.06.01'),
-  _r4('8537.10.19','Painéis solares fotovoltaicos (controladores)','103.07.01'),
-  _r4('8541.40.32','Células e módulos solares fotovoltaicos','103.07.02'),
-  _r4('8502.31.00','Aerogeradores (turbinas eólicas)','103.07.03'),
-
-  // =====================================================
-  // ISENTO / IMUNE (0%)
-  // =====================================================
-  _i('0713.33.19','Feijão (todos os tipos)','301.01.01'),
-  _i('0713.33.29','Feijão preto','301.01.02'),
-  _i('0713.33.99','Feijão carioca e outros','301.01.03'),
-  _i('1006.30.21','Arroz branco polido','301.01.04'),
-  _i('1006.30.29','Arroz parboilizado','301.01.05'),
-  _i('1006.20.10','Arroz integral','301.01.06'),
-  _i('1101.00.10','Farinha de trigo','301.01.07'),
-  _i('1102.20.00','Farinha de milho (fubá)','301.01.08'),
-  _i('1106.20.00','Farinha de mandioca','301.01.09'),
-  _i('1507.90.11','Óleo de soja refinado','301.01.10'),
-  _i('0407.21.00','Ovos de galinha frescos','301.01.11'),
-  _i('0407.11.00','Ovos de galinha para incubação','301.01.12'),
-  _i('0201.30.00','Carnes bovinas desossadas (frescas)','301.01.13'),
-  _i('0202.30.00','Carnes bovinas desossadas (congeladas)','301.01.14'),
-  _i('1701.14.00','Açúcar cristal','301.01.15'),
-  _i('1701.99.00','Açúcar refinado','301.01.16'),
-  _i('0902.10.00','Café torrado e moído','301.01.17'),
-  _i('1902.19.00','Massas alimentícias (macarrão)','301.01.18'),
-  _i('1902.11.00','Massas alimentícias com ovos','301.01.19'),
-  _i('2009.11.00','Suco de laranja natural 100%','301.01.20'),
-  _i('1508.10.00','Óleo de amendoim','301.01.21'),
-  _i('1512.19.11','Óleo de girassol refinado','301.01.22'),
-  _i('1515.29.10','Óleo de milho refinado','301.01.23'),
-  _i('0401.20.10','Leite fluido pasteurizado (tipo C)','301.01.24'),
-  _i('1901.10.10','Preparações à base de farinha para alimentação infantil','301.01.25'),
-  _i('0704.90.00','Repolho, couve e hortaliças','301.01.26'),
-  _i('0706.10.00','Cenoura e nabo','301.01.27'),
-  _i('0708.10.00','Ervilhas frescas','301.01.28'),
-  _i('1703.10.00','Melaço de cana-de-açúcar','301.01.29'),
-  _i('0910.11.00','Gengibre','301.01.30'),
-  _i('0409.00.00','Mel natural','301.01.31'),
-  _i('4901.10.00','Livros, jornais e periódicos','501.01.01','Imunidade Constitucional','30'),
-  _i('4902.10.00','Jornais e publicações periódicas','501.01.02','Imunidade Constitucional','30'),
-  _i('4902.90.00','Revistas e publicações diversas','501.01.03','Imunidade Constitucional','30'),
-  _i('4911.10.10','Material didático impresso','501.01.04','Imunidade Constitucional','30'),
-  _i('0000.00.00','Exportações de bens e serviços','302.01.01','Suspensão - Exportação','07'),
-  _i('9999.00.01','Insumos para Zona Franca de Manaus','302.02.01','Suspensão - ZFM','07'),
-  _i('9999.00.02','Templos religiosos (imunidade)','501.02.01','Imunidade Constitucional','30'),
-  _i('9999.00.03','Entidades de assistência social','501.03.01','Imunidade Constitucional','30'),
-  _i('9999.00.04','Partidos políticos e sindicatos','501.04.01','Imunidade Constitucional','30'),
-
-  // =====================================================
-  // MONOFÁSICO (alíquota fixa por unidade)
-  // =====================================================
-  _m('2710.12.59','Gasolina comum','201.01.01','litro','02'),
-  _m('2710.12.51','Gasolina de aviação','201.01.02','litro','02'),
-  _m('2710.12.41','Gasolina aditivada premium','201.01.03','litro','02'),
-  _m('2710.19.21','Óleo diesel S-10','201.01.04','litro','02'),
-  _m('2710.19.22','Óleo diesel S-500','201.01.05','litro','02'),
-  _m('2710.19.29','Óleo diesel marítimo','201.01.06','litro','02'),
-  _m('2711.19.10','GLP (gás de cozinha) a granel','201.01.07','kg','02'),
-  _m('2711.19.20','GLP (botijão P-13)','201.01.08','kg','02'),
-  _m('2711.11.00','Gás natural liquefeito (GNL)','201.01.09','kg','02'),
-  _m('2711.21.00','Gás natural veicular (GNV)','201.01.10','m³','02'),
-  _m('2207.10.90','Etanol hidratado combustível','201.01.11','litro','02'),
-  _m('2207.20.19','Etanol anidro (mistura gasolina)','201.01.12','litro','02'),
-  _m('2710.19.31','Querosene de aviação (QAV)','201.01.13','litro','02'),
-  _m('2713.20.00','Asfalto e betume de petróleo','201.01.14','kg','02'),
-  _m('3004.90.69','Medicamentos de marca (referência)','201.02.01','unid','03'),
-  _m('3004.90.39','Medicamentos genéricos','201.02.02','unid','03'),
-  _m('3004.90.59','Medicamentos similares','201.02.03','unid','03'),
-  _m('3004.10.19','Antibióticos de uso controlado','201.02.04','unid','03'),
-
-  // =====================================================
-  // IMPOSTO SELETIVO (IVA + IS adicional)
-  // =====================================================
-  _s('2402.20.00','Cigarros contendo tabaco','701.01.01','Saúde'),
-  _s('2402.10.00','Charutos e cigarrilhas','701.01.02','Saúde'),
-  _s('2403.11.00','Tabaco para narguilé','701.01.03','Saúde'),
-  _s('2403.99.90','Tabaco para cigarro eletrônico','701.01.04','Saúde'),
-  _s('2208.40.00','Rum e cachaça','701.01.05','Saúde'),
-  _s('2208.30.20','Uísque','701.01.06','Saúde'),
-  _s('2208.20.00','Aguardentes de vinho (conhaque, brandy)','701.01.07','Saúde'),
-  _s('2208.70.00','Licores','701.01.08','Saúde'),
-  _s('2208.90.00','Vodca e gin','701.01.09','Saúde'),
-  _s('2204.21.00','Vinhos (embalagens até 2L)','701.01.10','Saúde'),
-  _s('2203.00.00','Cervejas e chopes','701.01.11','Saúde'),
-  _s('2206.00.00','Sidras e bebidas fermentadas','701.01.12','Saúde'),
-  _s('2202.99.00','Bebidas açucaradas (refrigerantes)','701.01.13','Saúde'),
-  _s('2202.91.00','Cerveja sem álcool','701.01.14','Saúde'),
-  _s('8703.23.90','Veículos a combustão acima 1500cc','701.02.01','Meio Ambiente'),
-  _s('8703.24.90','Veículos a combustão acima 2500cc','701.02.02','Meio Ambiente'),
-  _s('8703.33.90','Veículos a diesel (acima 2500cc)','701.02.03','Meio Ambiente'),
-  _s('8903.99.00','Lanchas e iates de recreio','701.02.04','Meio Ambiente'),
-  _s('8903.92.00','Barcos a motor de recreio','701.02.05','Meio Ambiente'),
-  _s('8802.40.00','Aeronaves particulares (jatinhos)','701.02.06','Meio Ambiente'),
-  _s('8802.30.00','Helicópteros particulares','701.02.07','Meio Ambiente'),
-  _s('2602.00.00','Minério de manganês','701.03.01','Recursos Naturais'),
-  _s('2601.11.00','Minério de ferro não aglomerado','701.03.02','Recursos Naturais'),
-  _s('2601.12.00','Minério de ferro aglomerado (pelota)','701.03.03','Recursos Naturais'),
-  _s('2603.00.00','Minério de cobre','701.03.04','Recursos Naturais'),
-  _s('2606.00.00','Minério de alumínio (bauxita)','701.03.05','Recursos Naturais'),
-  _s('2709.00.10','Petróleo bruto','701.03.06','Recursos Naturais'),
-  _s('2709.00.20','Condensados de gás natural','701.03.07','Recursos Naturais'),
-];
-
-let cstActiveFilter = 'todos';
-
-function renderCST(data) {
-  const tbody = document.getElementById('cst-body');
-  const countEl = document.getElementById('cst-count');
-
-  const tagMap = {
-    'padrao': 'tag-blue',
-    'reduzida': 'tag-green',
-    'isento': 'tag-gray',
-    'monofasico': 'tag-orange',
-    'seletivo': 'tag-red'
-  };
-
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td><strong>${r.ncm}</strong></td>
-      <td>${r.desc}</td>
-      <td><span class="tag tag-purple">${r.cclass}</span></td>
-      <td><span class="tag ${tagMap[r.categ] || 'tag-blue'}">${r.classif}</span></td>
-      <td><strong>${r.cst}</strong></td>
-      <td>${r.cbs}</td>
-      <td>${r.ibs}</td>
-      <td><strong>${r.total}</strong></td>
-    </tr>
-  `).join('');
-
-  countEl.textContent = `Exibindo ${data.length} de ${cstData.length} registros`;
-}
-
-function filterCST() {
-  const q = document.getElementById('cst-search').value.toLowerCase().trim();
-  let filtered = cstData;
-
-  if (cstActiveFilter !== 'todos') {
-    filtered = filtered.filter(r => r.categ === cstActiveFilter);
-  }
-
-  if (q) {
-    filtered = filtered.filter(r =>
-      r.ncm.includes(q) ||
-      r.desc.toLowerCase().includes(q) ||
-      r.cclass.toLowerCase().includes(q) ||
-      r.classif.toLowerCase().includes(q) ||
-      r.cst.includes(q)
-    );
-  }
-
-  renderCST(filtered);
-}
-
-function filterCSTCateg(btn, categ) {
-  btn.parentElement.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  cstActiveFilter = categ;
-  filterCST();
-}
-
-// ==================== NBS / SERVICES DATA ====================
-// NBS helpers: P=Padrão, R6=Red60%, R4=Red40%, L=Liberal(-30%), E=Específico, I=Isento
-// ind = indicador de operação
-function _np(item,nbs,desc,ind){return{item,nbs,desc,ind,aliq:'26,50%',regime:'Alíquota Padrão',categ:'padrao'}}
-function _nr6(item,nbs,desc,ind){return{item,nbs,desc,ind,aliq:'10,60%',regime:'Redução 60%',categ:'reduzida'}}
-function _nr4(item,nbs,desc,ind){return{item,nbs,desc,ind,aliq:'15,90%',regime:'Redução 40%',categ:'reduzida'}}
-function _nl(item,nbs,desc,ind){return{item,nbs,desc,ind,aliq:'18,55%',regime:'Profissional Liberal (-30%)',categ:'liberal'}}
-function _ne(item,nbs,desc,ind,regime){return{item,nbs,desc,ind,aliq:'Regime Específico',regime:regime||'Regime Específico',categ:'especifico'}}
-function _ni(item,nbs,desc,ind){return{item,nbs,desc,ind,aliq:'0,00%',regime:'Isento / Imune',categ:'isento'}}
-
-const nbsData = [
-  // =====================================================
-  // LISTA 01 — INFORMÁTICA E CONGÊNERES (LC 116, item 1)
-  // =====================================================
-  _np('1.01','1.1101.10.00','Análise e desenvolvimento de sistemas','Domicílio do adquirente'),
-  _np('1.02','1.1101.20.00','Programação de computadores','Domicílio do adquirente'),
-  _np('1.03','1.1101.30.00','Processamento, armazenamento e hospedagem de dados','Domicílio do adquirente'),
-  _np('1.04','1.1101.40.00','Elaboração de programas de computadores (software)','Domicílio do adquirente'),
-  _np('1.05','1.1101.50.00','Licenciamento de programas de computador (SaaS)','Domicílio do adquirente'),
-  _np('1.06','1.1101.60.00','Assessoria e consultoria em informática','Domicílio do adquirente'),
-  _np('1.07','1.1101.70.00','Suporte técnico em informática e hardware','Local da prestação'),
-  _np('1.08','1.1101.80.00','Planejamento, confecção e manutenção de páginas web','Domicílio do adquirente'),
-  _np('1.09','1.1101.90.00','Disponibilização de conteúdo em páginas eletrônicas','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 02 — PESQUISAS E DESENVOLVIMENTO (LC 116, item 2)
-  // =====================================================
-  _np('2.01','1.1201.10.00','Pesquisa e desenvolvimento em ciências sociais e humanas','Domicílio do adquirente'),
-  _np('2.02','1.1201.20.00','Pesquisa e desenvolvimento em ciências exatas e naturais','Domicílio do adquirente'),
-  _np('2.03','1.1201.30.00','Pesquisa e desenvolvimento em ciências biomédicas','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 03 — LOCAÇÃO DE BENS MÓVEIS (LC 116, item 3)
-  // =====================================================
-  _np('3.02','1.1301.10.00','Cessão de direito de uso de marcas e patentes','Domicílio do adquirente'),
-  _np('3.03','1.1301.20.00','Exploração de salões de festas e eventos','Local da prestação'),
-  _np('3.04','1.1301.30.00','Locação, sublocação e arrendamento de bens imóveis','Local do imóvel'),
-  _np('3.05','1.1301.40.00','Cessão de espaços em condomínios e shopping centers','Local do imóvel'),
-
-  // =====================================================
-  // LISTA 04 — SAÚDE (LC 116, item 4)
-  // =====================================================
-  _nr6('4.01','1.1401.10.00','Medicina e biomedicina — consultas médicas','Domicílio do adquirente'),
-  _nr6('4.02','1.1401.20.00','Análises clínicas, patologia e exames laboratoriais','Local da prestação'),
-  _nr6('4.03','1.1401.30.00','Hospitais, clínicas e pronto-socorros','Local da prestação'),
-  _nr6('4.04','1.1401.40.00','Instrumentação cirúrgica','Local da prestação'),
-  _nr6('4.05','1.1401.50.00','Acupuntura','Domicílio do adquirente'),
-  _nr6('4.06','1.1401.60.00','Enfermagem e serviços de home care','Domicílio do adquirente'),
-  _nr6('4.07','1.1401.70.00','Serviços farmacêuticos (manipulação)','Local da prestação'),
-  _nr6('4.08','1.1401.80.00','Terapia ocupacional e fisioterapia','Local da prestação'),
-  _nr6('4.09','1.1401.90.00','Terapia de fala (fonoaudiologia)','Domicílio do adquirente'),
-  _nr6('4.10','1.1402.10.00','Nutrição e dietética','Domicílio do adquirente'),
-  _nr6('4.11','1.1402.20.00','Obstetrícia (parto e pré-natal)','Local da prestação'),
-  _nr6('4.12','1.1402.30.00','Odontologia e prótese dentária','Local da prestação'),
-  _nr6('4.13','1.1402.40.00','Ortóptica e serviços de optometria','Local da prestação'),
-  _nr6('4.14','1.1402.50.00','Próteses sob encomenda','Local da prestação'),
-  _nr6('4.15','1.1402.60.00','Psicanálise e psicologia','Domicílio do adquirente'),
-  _nr6('4.16','1.1402.70.00','Casas de repouso e recuperação','Local da prestação'),
-  _nr6('4.17','1.1402.80.00','Bancos de sangue, leite, pele e órgãos','Local da prestação'),
-  _nr6('4.18','1.1402.90.00','Diagnóstico por imagem (raio-X, tomografia, ressonância)','Local da prestação'),
-  _nr6('4.19','1.1403.10.00','Serviços de diálise e hemodiálise','Local da prestação'),
-  _nr6('4.20','1.1403.20.00','Radioterapia e quimioterapia','Local da prestação'),
-  _nr6('4.21','1.1403.30.00','Esterilização e desinfecção hospitalar','Local da prestação'),
-  _nr6('4.22','1.1403.40.00','Planos de saúde — administração','Domicílio do adquirente'),
-  _nr6('4.23','1.1403.50.00','Serviços de remoção de pacientes (ambulância)','Local da prestação'),
-
-  // =====================================================
-  // LISTA 05 — MEDICINA VETERINÁRIA (LC 116, item 5)
-  // =====================================================
-  _np('5.01','1.1501.10.00','Medicina veterinária e zootecnia','Local da prestação'),
-  _np('5.02','1.1501.20.00','Hospitais veterinários e clínicas veterinárias','Local da prestação'),
-  _np('5.03','1.1501.30.00','Laboratórios de análise veterinária','Local da prestação'),
-  _np('5.04','1.1501.40.00','Inseminação artificial e biotecnologia animal','Local da prestação'),
-  _np('5.05','1.1501.50.00','Banho, tosa e embelezamento de animais','Local da prestação'),
-  _np('5.06','1.1501.60.00','Hospedagem de animais (hotel pet)','Local da prestação'),
-  _np('5.07','1.1501.70.00','Adestramento de animais','Local da prestação'),
-  _np('5.08','1.1501.80.00','Serviços funerários para animais','Local da prestação'),
-  _np('5.09','1.1501.90.00','Planos de saúde veterinários (pet saúde)','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 06 — CUIDADOS PESSOAIS E ESTÉTICA (LC 116, item 6)
-  // =====================================================
-  _np('6.01','1.1601.10.00','Barbearia e cabeleireiros','Local da prestação'),
-  _np('6.02','1.1601.20.00','Manicure e pedicure','Local da prestação'),
-  _np('6.03','1.1601.30.00','Estética corporal e facial','Local da prestação'),
-  _np('6.04','1.1601.40.00','Tratamento capilar e tricologia','Local da prestação'),
-  _np('6.05','1.1601.50.00','Depilação','Local da prestação'),
-  _np('6.06','1.1601.60.00','Tatuagem e piercing','Local da prestação'),
-
-  // =====================================================
-  // LISTA 07 — ENGENHARIA E ARQUITETURA (LC 116, item 7)
-  // =====================================================
-  _nl('7.01','1.1701.10.00','Engenharia — projetos e consultoria técnica','Domicílio do adquirente'),
-  _nl('7.02','1.1701.20.00','Execução de obras e construção civil','Local da prestação'),
-  _nl('7.03','1.1701.30.00','Elaboração de projetos (inclusive complementares)','Domicílio do adquirente'),
-  _nl('7.04','1.1701.40.00','Gerenciamento e fiscalização de obras','Local da prestação'),
-  _nl('7.05','1.1701.50.00','Assessoria e consultoria em arquitetura e urbanismo','Domicílio do adquirente'),
-  _np('7.06','1.1701.60.00','Demolição de edifícios e estruturas','Local da prestação'),
-  _np('7.07','1.1701.70.00','Reparação, conservação e reforma de edifícios','Local da prestação'),
-  _np('7.08','1.1701.80.00','Instalações elétricas e hidráulicas','Local da prestação'),
-  _np('7.09','1.1701.90.00','Instalação de ar condicionado e refrigeração','Local da prestação'),
-  _np('7.10','1.1702.10.00','Instalações de gás e encanamento','Local da prestação'),
-  _np('7.11','1.1702.20.00','Instalações de elevadores e escadas rolantes','Local da prestação'),
-  _np('7.12','1.1702.30.00','Limpeza e dragagem de rios e portos','Local da prestação'),
-  _np('7.13','1.1702.40.00','Terraplenagem e pavimentação','Local da prestação'),
-  _np('7.14','1.1702.50.00','Pintura e decoração de interiores','Local da prestação'),
-  _np('7.15','1.1702.60.00','Carpintaria e serralheria','Local da prestação'),
-  _np('7.16','1.1702.70.00','Escoramento, contenção de encostas','Local da prestação'),
-  _np('7.17','1.1702.80.00','Paisagismo e jardinagem','Local da prestação'),
-  _np('7.18','1.1702.90.00','Concretagem e perfuração de poços','Local da prestação'),
-  _np('7.19','1.1703.10.00','Acompanhamento e fiscalização de obras de terceiros','Local da prestação'),
-  _np('7.20','1.1703.20.00','Aerofotogrametria e cartografia','Domicílio do adquirente'),
-  _np('7.21','1.1703.30.00','Topografia e batimetria','Local da prestação'),
-  _np('7.22','1.1703.40.00','Geologia e geotecnia','Local da prestação'),
-
-  // =====================================================
-  // LISTA 08 — EDUCAÇÃO E ENSINO (LC 116, item 8)
-  // =====================================================
-  _nr6('8.01','1.1801.10.00','Ensino regular pré-escolar, fundamental e médio','Local da prestação'),
-  _nr4('8.02','1.1801.20.00','Instrução, treinamento e ensino superior','Local da prestação'),
-  _nr6('8.03','1.1801.30.00','Educação especial e inclusiva','Local da prestação'),
-  _nr4('8.04','1.1801.40.00','Ensino técnico e profissionalizante','Local da prestação'),
-  _nr4('8.05','1.1801.50.00','Cursos de pós-graduação (lato e stricto sensu)','Domicílio do adquirente'),
-  _nr4('8.06','1.1801.60.00','Cursos livres e de idiomas','Local da prestação'),
-  _nr4('8.07','1.1801.70.00','Treinamento corporativo e coaching profissional','Domicílio do adquirente'),
-  _nr4('8.08','1.1801.80.00','Ensino a distância (EAD)','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 09 — HOSPEDAGEM E TURISMO (LC 116, item 9)
-  // =====================================================
-  _nr6('9.01','1.1901.10.00','Hospedagem em hotéis e pousadas','Local da prestação'),
-  _nr6('9.02','1.1901.20.00','Agenciamento e organização de viagens e turismo','Domicílio do adquirente'),
-  _np('9.03','1.1901.30.00','Guias de turismo','Local da prestação'),
-
-  // =====================================================
-  // LISTA 10 — INTERMEDIAÇÃO E CONGÊNERES (LC 116, item 10)
-  // =====================================================
-  _np('10.01','1.2001.10.00','Agenciamento e corretagem de câmbio','Domicílio do adquirente'),
-  _np('10.02','1.2001.20.00','Agenciamento e corretagem de seguros','Domicílio do adquirente'),
-  _np('10.03','1.2001.30.00','Agenciamento e corretagem de cartões de crédito','Domicílio do adquirente'),
-  _np('10.04','1.2001.40.00','Agenciamento e corretagem de planos de saúde','Domicílio do adquirente'),
-  _np('10.05','1.2001.50.00','Agenciamento e corretagem de imóveis','Local do imóvel'),
-  _np('10.06','1.2001.60.00','Agenciamento marítimo (despachante)','Local da prestação'),
-  _np('10.07','1.2001.70.00','Agenciamento de notícias e publicidade','Domicílio do adquirente'),
-  _np('10.08','1.2001.80.00','Representação comercial de qualquer natureza','Domicílio do adquirente'),
-  _np('10.09','1.2001.90.00','Distribuição e venda de bilhetes de loteria','Domicílio do adquirente'),
-  _np('10.10','1.2002.10.00','Agenciamento, corretagem e intermediação de bens móveis','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 11 — GUARDA E VIGILÂNCIA (LC 116, item 11)
-  // =====================================================
-  _np('11.01','1.2101.10.00','Vigilância, segurança e monitoramento eletrônico','Local da prestação'),
-  _np('11.02','1.2101.20.00','Escolta e segurança pessoal (seguranças)','Local da prestação'),
-  _np('11.03','1.2101.30.00','Transporte de valores','Local da prestação'),
-  _np('11.04','1.2101.40.00','Armazenamento, guarda e depósito de bens','Local da prestação'),
-  _np('11.05','1.2101.50.00','Vigilância de veículos (estacionamento)','Local da prestação'),
-
-  // =====================================================
-  // LISTA 12 — DIVERSÕES E LAZER (LC 116, item 12)
-  // =====================================================
-  _np('12.01','1.2201.10.00','Espetáculos teatrais e circenses','Local da prestação'),
-  _np('12.02','1.2201.20.00','Exibições cinematográficas (cinema)','Local da prestação'),
-  _np('12.03','1.2201.30.00','Espetáculos musicais e shows','Local da prestação'),
-  _np('12.04','1.2201.40.00','Programas de auditório (TV)','Local da prestação'),
-  _np('12.05','1.2201.50.00','Competições esportivas (ingressos)','Local da prestação'),
-  _np('12.06','1.2201.60.00','Execução de música ao vivo','Local da prestação'),
-  _np('12.07','1.2201.70.00','Parques de diversões e temáticos','Local da prestação'),
-  _np('12.08','1.2201.80.00','Boates, danceterias e discotecas','Local da prestação'),
-  _np('12.09','1.2201.90.00','Bilhares, boliches e jogos recreativos','Local da prestação'),
-  _np('12.10','1.2202.10.00','Corridas de animais (turfe, vaquejadas)','Local da prestação'),
-  _np('12.11','1.2202.20.00','Competições esportivas de veículos','Local da prestação'),
-  _np('12.12','1.2202.30.00','Fornecimento de música mediante transmissão (streaming)','Domicílio do adquirente'),
-  _np('12.13','1.2202.40.00','Produção de eventos, shows e espetáculos','Local da prestação'),
-  _np('12.14','1.2202.50.00','Fornecimento de cenografia e decoração para eventos','Local da prestação'),
-  _np('12.15','1.2202.60.00','Recreação e animação em festas e eventos','Local da prestação'),
-  _np('12.16','1.2202.70.00','Museus, galerias, exposições e congêneres','Local da prestação'),
-  _np('12.17','1.2202.80.00','Academias de ginástica, natação e esportes','Local da prestação'),
-
-  // =====================================================
-  // LISTA 13 — FONOGRAFIA E FOTOGRAFIA (LC 116, item 13)
-  // =====================================================
-  _np('13.01','1.2301.10.00','Produção, gravação e distribuição de áudio','Domicílio do adquirente'),
-  _np('13.02','1.2301.20.00','Fonografia — gravação de sons e ruídos','Domicílio do adquirente'),
-  _np('13.03','1.2301.30.00','Fotografia e cinematografia (produção)','Local da prestação'),
-  _np('13.04','1.2301.40.00','Reprografia, microfilmagem e digitalização','Local da prestação'),
-  _np('13.05','1.2301.50.00','Composição gráfica e fotocomposição','Local da prestação'),
-
-  // =====================================================
-  // LISTA 14 — SERVIÇOS FINANCEIROS E BANCÁRIOS (LC 116, item 15)
-  // =====================================================
-  _ne('15.01','1.2501.10.00','Administração de fundos e carteiras de investimento','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.02','1.2501.20.00','Abertura de contas e cadastro bancário','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.03','1.2501.30.00','Cobrança e protesto de títulos','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.04','1.2501.40.00','Custódia e guarda de valores','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.05','1.2501.50.00','Fornecimento de talões de cheque e cartões','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.06','1.2501.60.00','Emissão e administração de cartão de crédito/débito','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.07','1.2501.70.00','Transferências e pagamentos eletrônicos (PIX, TED, DOC)','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.08','1.2501.80.00','Compensação de cheques e outros papéis','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.09','1.2501.90.00','Arrendamento mercantil (leasing)','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.10','1.2502.10.00','Serviços de câmbio','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.11','1.2502.20.00','Administração de consórcios','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.12','1.2502.30.00','Corretagem de títulos e valores mobiliários','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.13','1.2502.40.00','Operações de crédito e financiamento','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.14','1.2502.50.00','Factoring (fomento mercantil)','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.15','1.2502.60.00','Securitização de recebíveis','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.16','1.2502.70.00','Serviços de fintech e pagamentos digitais','Domicílio do adquirente','Regime Financeiro'),
-  _ne('15.17','1.2502.80.00','Seguros — administração e corretagem','Domicílio do adquirente','Regime Seguros'),
-  _ne('15.18','1.2502.90.00','Previdência privada — administração de planos','Domicílio do adquirente','Regime Previdência'),
-
-  // =====================================================
-  // LISTA 16 — TRANSPORTE (LC 116, item 16)
-  // =====================================================
-  _nr6('16.01','1.2601.10.00','Transporte coletivo urbano (ônibus, metrô)','Local da prestação'),
-  _nr6('16.02','1.2601.20.00','Transporte rodoviário interestadual de passageiros','Domicílio do adquirente'),
-  _nr6('16.03','1.2601.30.00','Transporte escolar','Domicílio do adquirente'),
-  _nr6('16.04','1.2601.40.00','Transporte de cargas rodoviário','Domicílio do adquirente'),
-  _nr6('16.05','1.2601.50.00','Transporte de cargas ferroviário','Domicílio do adquirente'),
-  _nr6('16.06','1.2601.60.00','Transporte de cargas por cabotagem','Domicílio do adquirente'),
-  _np('16.07','1.2601.70.00','Transporte por aplicativo (motorista particular)','Domicílio do adquirente'),
-  _np('16.08','1.2601.80.00','Transporte de mudanças','Domicílio do adquirente'),
-  _np('16.09','1.2601.90.00','Serviços de motoboy e entregas rápidas','Domicílio do adquirente'),
-  _nr6('16.10','1.2602.10.00','Transporte aéreo de passageiros (doméstico)','Domicílio do adquirente'),
-  _nr6('16.11','1.2602.20.00','Transporte aéreo de cargas','Domicílio do adquirente'),
-  _np('16.12','1.2602.30.00','Transporte de valores e malotes','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 17 — APOIO TÉCNICO E ADMINISTRATIVO (LC 116, item 17)
-  // =====================================================
-  _np('17.01','1.1302.10.00','Assessoria e consultoria de qualquer natureza','Domicílio do adquirente'),
-  _np('17.02','1.1302.11.00','Análise e desenvolvimento de sistemas sob encomenda','Domicílio do adquirente'),
-  _nl('17.03','1.1302.12.00','Auditoria contábil e empresarial','Domicílio do adquirente'),
-  _nl('17.04','1.1302.13.00','Atuária e cálculos técnicos','Domicílio do adquirente'),
-  _nl('17.05','1.1302.14.00','Contabilidade e escrituração fiscal','Domicílio do adquirente'),
-  _nl('17.06','1.1302.15.00','Consultoria e assessoria econômica e financeira','Domicílio do adquirente'),
-  _np('17.07','1.1302.16.00','Elaboração de estudos de viabilidade','Domicílio do adquirente'),
-  _np('17.08','1.1302.17.00','Planejamento, organização e administração de feiras e eventos','Local da prestação'),
-  _np('17.09','1.1302.18.00','Administração em geral (inclusive de bens e negócios)','Domicílio do adquirente'),
-  _np('17.10','1.1302.19.00','Leilão e avaliação de bens','Local da prestação'),
-  _nl('17.11','1.1302.20.00','Advocacia e serviços jurídicos','Domicílio do adquirente'),
-  _np('17.12','1.1302.21.00','Arbitragem e mediação','Domicílio do adquirente'),
-  _np('17.13','1.1302.22.00','Despachantes e agentes aduaneiros','Local da prestação'),
-  _np('17.14','1.1302.23.00','Perícia e tradução juramentada','Domicílio do adquirente'),
-  _np('17.15','1.1302.24.00','Reportagem e jornalismo','Domicílio do adquirente'),
-  _np('17.16','1.1302.25.00','Meteorologia e previsão do tempo','Domicílio do adquirente'),
-  _nl('17.17','1.1302.26.00','Assessoria e consultoria em psicologia','Domicílio do adquirente'),
-  _np('17.18','1.1302.27.00','Organização de feiras e congressos','Local da prestação'),
-  _np('17.19','1.1302.28.00','Administração de condomínios','Local do imóvel'),
-  _np('17.20','1.1302.29.00','Cobranças e recebimentos de terceiros','Domicílio do adquirente'),
-  _np('17.21','1.1302.30.00','Design gráfico e comunicação visual','Domicílio do adquirente'),
-  _np('17.22','1.1302.31.00','Recrutamento e seleção de pessoal','Domicílio do adquirente'),
-  _np('17.23','1.1302.32.00','Relações públicas','Domicílio do adquirente'),
-  _nl('17.24','1.1302.33.00','Serviços de estatística','Domicílio do adquirente'),
-  _np('17.25','1.1302.34.00','Fornecimento de mão de obra temporária','Local da prestação'),
-
-  // =====================================================
-  // LISTA 18 — TELECOMUNICAÇÕES (LC 116, item 25 adj.)
-  // =====================================================
-  _np('25.01','1.3501.10.00','Telefonia fixa e VoIP','Domicílio do adquirente'),
-  _np('25.02','1.3501.20.00','Telefonia móvel celular','Domicílio do adquirente'),
-  _np('25.03','1.3501.30.00','Provedores de acesso à internet','Domicílio do adquirente'),
-  _np('25.04','1.3501.40.00','TV por assinatura (cabo, satélite, IPTV)','Domicílio do adquirente'),
-  _np('25.05','1.3501.50.00','Transmissão de dados (links dedicados)','Domicílio do adquirente'),
-  _np('25.06','1.3501.60.00','Serviços de data center e colocation','Domicílio do adquirente'),
-  _np('25.07','1.3501.70.00','Serviços de cloud computing (nuvem)','Domicílio do adquirente'),
-  _np('25.08','1.3501.80.00','Streaming de vídeo e conteúdo digital','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 19 — SERVIÇOS DE LIMPEZA E MANUTENÇÃO (LC 116, item 7 adj.)
-  // =====================================================
-  _np('7.10.1','1.1704.10.00','Limpeza, manutenção e conservação de imóveis','Local da prestação'),
-  _np('7.10.2','1.1704.20.00','Dedetização e controle de pragas','Local da prestação'),
-  _np('7.10.3','1.1704.30.00','Tratamento e limpeza de piscinas','Local da prestação'),
-  _np('7.10.4','1.1704.40.00','Jardinagem e manutenção de áreas verdes','Local da prestação'),
-  _np('7.10.5','1.1704.50.00','Manutenção de elevadores','Local da prestação'),
-  _np('7.10.6','1.1704.60.00','Manutenção e limpeza de ar-condicionado','Local da prestação'),
-
-  // =====================================================
-  // LISTA 20 — PUBLICIDADE E MARKETING (LC 116, item 17 adj.)
-  // =====================================================
-  _np('17.06.1','1.2701.10.00','Propaganda e publicidade (agências)','Domicílio do adquirente'),
-  _np('17.06.2','1.2701.20.00','Promoção de vendas e merchandising','Domicílio do adquirente'),
-  _np('17.06.3','1.2701.30.00','Marketing digital e gestão de tráfego','Domicílio do adquirente'),
-  _np('17.06.4','1.2701.40.00','Pesquisa de mercado e opinião pública','Domicílio do adquirente'),
-  _np('17.06.5','1.2701.50.00','Planejamento de comunicação e mídia','Domicílio do adquirente'),
-  _np('17.06.6','1.2701.60.00','Produção de conteúdo digital','Domicílio do adquirente'),
-  _np('17.06.7','1.2701.70.00','Assessoria de imprensa','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 21 — SERVIÇOS DE ALIMENTAÇÃO (LC 116, item 7/9 adj.)
-  // =====================================================
-  _np('9.03.1','1.2801.10.00','Restaurantes e lanchonetes','Local da prestação'),
-  _np('9.03.2','1.2801.20.00','Bares e cafeterias','Local da prestação'),
-  _np('9.03.3','1.2801.30.00','Catering e serviços de buffet','Local da prestação'),
-  _np('9.03.4','1.2801.40.00','Fornecimento de refeições industriais','Local da prestação'),
-  _np('9.03.5','1.2801.50.00','Food trucks e alimentação de rua','Local da prestação'),
-  _np('9.03.6','1.2801.60.00','Delivery de alimentos (plataformas)','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 22 — SERVIÇOS IMOBILIÁRIOS (Regime Específico)
-  // =====================================================
-  _ne('3.04.1','1.2901.10.00','Locação de imóveis residenciais','Local do imóvel','Regime Imobiliário'),
-  _ne('3.04.2','1.2901.20.00','Locação de imóveis comerciais','Local do imóvel','Regime Imobiliário'),
-  _ne('3.04.3','1.2901.30.00','Incorporação imobiliária (venda de imóveis na planta)','Local do imóvel','Regime Imobiliário'),
-  _ne('3.04.4','1.2901.40.00','Administração de imóveis de terceiros','Local do imóvel','Regime Imobiliário'),
-  _ne('3.04.5','1.2901.50.00','Intermediação de compra e venda de imóveis','Local do imóvel','Regime Imobiliário'),
-
-  // =====================================================
-  // LISTA 23 — MANUTENÇÃO E REPARAÇÃO (LC 116, item 14)
-  // =====================================================
-  _np('14.01','1.3001.10.00','Lubrificação, limpeza e revisão de máquinas e veículos','Local da prestação'),
-  _np('14.02','1.3001.20.00','Assistência técnica de eletrodomésticos e eletrônicos','Local da prestação'),
-  _np('14.03','1.3001.30.00','Recondicionamento de motores e peças','Local da prestação'),
-  _np('14.04','1.3001.40.00','Recauchutagem e regeneração de pneus','Local da prestação'),
-  _np('14.05','1.3001.50.00','Restauração, recondicionamento e repintura de veículos (funilaria)','Local da prestação'),
-  _np('14.06','1.3001.60.00','Instalação e manutenção de equipamentos industriais','Local da prestação'),
-  _np('14.07','1.3001.70.00','Manutenção de equipamentos de TI e telecomunicações','Local da prestação'),
-  _np('14.08','1.3001.80.00','Chaveiros e serviços de abertura de fechaduras','Local da prestação'),
-  _np('14.09','1.3001.90.00','Reparação de calçados e artigos de couro','Local da prestação'),
-  _np('14.10','1.3002.10.00','Reparação de relógios e joias','Local da prestação'),
-  _np('14.11','1.3002.20.00','Manutenção e reparação de equipamentos médicos','Local da prestação'),
-  _np('14.12','1.3002.30.00','Conserto de instrumentos musicais','Local da prestação'),
-  _np('14.13','1.3002.40.00','Blindagem de veículos','Local da prestação'),
-
-  // =====================================================
-  // LISTA 24 — SERVIÇOS DE SAÚDE ANIMAL E AGRO (adj.)
-  // =====================================================
-  _nr6('5.10','1.3101.10.00','Serviços de defesa sanitária animal','Local da prestação'),
-  _nr6('5.11','1.3101.20.00','Assistência técnica agropecuária e extensão rural','Local da prestação'),
-  _nr6('5.12','1.3101.30.00','Serviços de irrigação e drenagem agrícola','Local da prestação'),
-
-  // =====================================================
-  // LISTA 25 — CARTÓRIOS E REGISTROS (LC 116, item 21)
-  // =====================================================
-  _np('21.01','1.3201.10.00','Serviços de cartório e tabelionato (registros)','Local da prestação'),
-  _np('21.02','1.3201.20.00','Reconhecimento de firmas e autenticações','Local da prestação'),
-  _np('21.03','1.3201.30.00','Registro de imóveis e hipotecas','Local da prestação'),
-  _np('21.04','1.3201.40.00','Registro civil de pessoas','Local da prestação'),
-
-  // =====================================================
-  // LISTA 26 — SERVIÇOS FUNERÁRIOS (LC 116, item 25)
-  // =====================================================
-  _np('25.01.1','1.3301.10.00','Serviços funerários (translado, velório, sepultamento)','Local da prestação'),
-  _np('25.02.1','1.3301.20.00','Cremação de cadáveres','Local da prestação'),
-  _np('25.03.1','1.3301.30.00','Planos funerários e assistência funeral','Domicílio do adquirente'),
-  _np('25.04.1','1.3301.40.00','Manutenção e conservação de jazigos e cemitérios','Local da prestação'),
-
-  // =====================================================
-  // LISTA 27 — SERVIÇOS PORTUÁRIOS E AEROPORTUÁRIOS (LC 116, item 20)
-  // =====================================================
-  _np('20.01','1.3401.10.00','Serviços portuários (capatazia, estiva, conferência)','Local da prestação'),
-  _np('20.02','1.3401.20.00','Serviços de terminal de contêineres','Local da prestação'),
-  _np('20.03','1.3401.30.00','Serviços aeroportuários (embarque, pouso, taxiamento)','Local da prestação'),
-  _np('20.04','1.3401.40.00','Armazenagem em portos e aeroportos (REDEX, EADI)','Local da prestação'),
-
-  // =====================================================
-  // LISTA 28 — COOPERATIVAS E SOCIEDADES (adj.)
-  // =====================================================
-  _ne('15.20','1.3601.10.00','Cooperativas de crédito','Domicílio do adquirente','Regime Cooperativas'),
-  _ne('15.21','1.3601.20.00','Cooperativas de trabalho médico (Unimed etc.)','Domicílio do adquirente','Regime Cooperativas'),
-  _ne('15.22','1.3601.30.00','Cooperativas de transporte','Domicílio do adquirente','Regime Cooperativas'),
-
-  // =====================================================
-  // LISTA 29 — SERVIÇOS DIGITAIS E PLATAFORMAS (novo)
-  // =====================================================
-  _np('1.09.1','1.3701.10.00','Marketplace e plataformas de e-commerce (comissões)','Domicílio do adquirente'),
-  _np('1.09.2','1.3701.20.00','Serviços de intermediação de aplicativos (app stores)','Domicílio do adquirente'),
-  _np('1.09.3','1.3701.30.00','Plataformas de economia compartilhada (Airbnb, etc.)','Domicílio do adquirente'),
-  _np('1.09.4','1.3701.40.00','Serviços de publicidade digital (Google Ads, Meta Ads)','Domicílio do adquirente'),
-  _np('1.09.5','1.3701.50.00','Serviços de assinatura digital (streaming, SaaS)','Domicílio do adquirente'),
-  _np('1.09.6','1.3701.60.00','Jogos eletrônicos online (games as a service)','Domicílio do adquirente'),
-  _np('1.09.7','1.3701.70.00','Serviços de inteligência artificial e machine learning','Domicílio do adquirente'),
-  _np('1.09.8','1.3701.80.00','Serviços de blockchain e criptoativos (custódia)','Domicílio do adquirente'),
-
-  // =====================================================
-  // LISTA 30 — PROFISSIONAIS LIBERAIS (LC 116, adj.)
-  // =====================================================
-  _nl('17.14.1','1.3801.10.00','Serviços de arquitetura','Domicílio do adquirente'),
-  _nl('17.14.2','1.3801.20.00','Serviços de agronomia','Domicílio do adquirente'),
-  _nl('17.14.3','1.3801.30.00','Serviços de biologia e bioquímica','Domicílio do adquirente'),
-  _nl('17.14.4','1.3801.40.00','Serviços de corretagem de seguros (corretor PF)','Domicílio do adquirente'),
-  _nl('17.14.5','1.3801.50.00','Serviços de economia e análise econômica','Domicílio do adquirente'),
-  _nl('17.14.6','1.3801.60.00','Serviços de enfermagem (profissional autônomo)','Domicílio do adquirente'),
-  _nl('17.14.7','1.3801.70.00','Serviços de farmácia (farmacêutico autônomo)','Domicílio do adquirente'),
-  _nl('17.14.8','1.3801.80.00','Serviços de fisioterapia (profissional autônomo)','Domicílio do adquirente'),
-  _nl('17.14.9','1.3801.90.00','Serviços de geologia e geofísica','Domicílio do adquirente'),
-  _nl('17.14.10','1.3802.10.00','Serviços de jornalismo (jornalista autônomo)','Domicílio do adquirente'),
-  _nl('17.14.11','1.3802.20.00','Serviços de medicina (médico autônomo)','Domicílio do adquirente'),
-  _nl('17.14.12','1.3802.30.00','Serviços de nutrição (nutricionista autônomo)','Domicílio do adquirente'),
-  _nl('17.14.13','1.3802.40.00','Serviços de odontologia (dentista autônomo)','Domicílio do adquirente'),
-  _nl('17.14.14','1.3802.50.00','Serviços de psicologia (psicólogo autônomo)','Domicílio do adquirente'),
-  _nl('17.14.15','1.3802.60.00','Serviços de publicidade (publicitário autônomo)','Domicílio do adquirente'),
-  _nl('17.14.16','1.3802.70.00','Serviços de química (químico autônomo)','Domicílio do adquirente'),
-  _nl('17.14.17','1.3802.80.00','Serviços de administração (administrador autônomo)','Domicílio do adquirente'),
-  _nl('17.14.18','1.3802.90.00','Serviços de despachante aduaneiro (autônomo)','Local da prestação'),
-
-  // =====================================================
-  // LISTA 31 — ISENTOS / IMUNES
-  // =====================================================
-  _ni('8.01.1','1.9001.10.00','Educação pública gratuita (FILANTROPIA)','Local da prestação'),
-  _ni('4.01.1','1.9001.20.00','Serviços de saúde pública gratuita (SUS direto)','Local da prestação'),
-  _ni('99.01','1.9001.30.00','Serviços prestados a organismos internacionais (imunidade)','Domicílio do adquirente'),
-  _ni('99.02','1.9001.40.00','Exportação de serviços (resultado no exterior)','Domicílio do adquirente'),
-  _ni('99.03','1.9001.50.00','Serviços prestados por entidades religiosas','Local da prestação'),
-  _ni('99.04','1.9001.60.00','Serviços de assistência social sem fins lucrativos','Local da prestação'),
-  _ni('99.05','1.9001.70.00','Serviços prestados por partidos políticos e sindicatos','Local da prestação'),
-];
-
-let nbsActiveFilter = 'todos';
-
-function renderNBS(data) {
-  const tbody = document.getElementById('nbs-body');
-  const countEl = document.getElementById('nbs-count');
-
-  const tagMap = {
-    'padrao': 'tag-red',
-    'reduzida': 'tag-green',
-    'liberal': 'tag-purple',
-    'especifico': 'tag-orange',
-    'isento': 'tag-gray'
-  };
-
-  const indMap = {
-    'Domicílio do adquirente': 'tag-blue',
-    'Local da prestação': 'tag-orange',
-    'Local do imóvel': 'tag-green',
-    'Domicílio do prestador': 'tag-purple'
-  };
-
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td><strong>${r.item}</strong></td>
-      <td><span class="tag tag-purple">${r.nbs}</span></td>
-      <td>${r.desc}</td>
-      <td><span class="tag ${indMap[r.ind] || 'tag-blue'}">${r.ind}</span></td>
-      <td><strong>${r.aliq}</strong></td>
-      <td><span class="tag ${tagMap[r.categ] || 'tag-blue'}">${r.regime}</span></td>
-    </tr>
-  `).join('');
-
-  countEl.textContent = `Exibindo ${data.length} de ${nbsData.length} registros`;
-}
-
-function filterNBS() {
-  const q = document.getElementById('nbs-search').value.toLowerCase().trim();
-  let filtered = nbsData;
-
-  if (nbsActiveFilter !== 'todos') {
-    filtered = filtered.filter(r => r.categ === nbsActiveFilter);
-  }
-
-  if (q) {
-    filtered = filtered.filter(r =>
-      r.item.toLowerCase().includes(q) ||
-      r.nbs.toLowerCase().includes(q) ||
-      r.desc.toLowerCase().includes(q) ||
-      r.ind.toLowerCase().includes(q) ||
-      r.regime.toLowerCase().includes(q)
-    );
-  }
-
-  renderNBS(filtered);
-}
-
-function filterNBSCateg(btn, categ) {
-  btn.parentElement.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  nbsActiveFilter = categ;
-  filterNBS();
-}
-
-// ==================== FAQ ====================
-function toggleFaq(btn) {
-  btn.parentElement.classList.toggle('open');
-}
-
-// ==================== INIT ====================
-renderCST(cstData);
-renderNBS(nbsData);
-</script>
+<!-- ==================== SCRIPTS ==================== -->
+<script src="js/data.js"></script>
+<script src="js/paywall.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
