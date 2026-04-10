@@ -28,22 +28,22 @@ function debounce(fn, delay) {
   };
 }
 
+// ==================== API CONFIG ====================
+var API_LEAD = 'https://wvfceibnzxrzdueoablw.supabase.co/functions/v1/simulador-lead';
+
 // ==================== LEAD GATE ====================
-function isLeadCaptured() {
-  return !!localStorage.getItem('leads');
+function isLeadVerified() {
+  try {
+    var lead = JSON.parse(localStorage.getItem('simulador_lead') || 'null');
+    return lead && lead.verified === true;
+  } catch(e) { return false; }
 }
 
-function guardLeadGate(callback) {
-  if (isLeadCaptured()) {
-    callback();
-    return true;
-  }
-  showLeadGateModal(callback);
-  return false;
+function saveLeadLocal(data) {
+  localStorage.setItem('simulador_lead', JSON.stringify(data));
 }
 
 function showLeadGateModal(callback) {
-  // Se já existe um modal, remove
   var existing = document.getElementById('leadGateModal');
   if (existing) existing.remove();
 
@@ -58,24 +58,58 @@ function showLeadGateModal(callback) {
     '</div>' +
     '<h2>Cadastre-se e <span>simule gratuitamente</span></h2>' +
     '<p class="lead-sub">Sem custos. Acesso completo a todas as simulações e tabelas.</p>' +
-    '<form id="leadGateForm">' +
-      '<div class="form-group">' +
-        '<label for="gateName">Nome completo</label>' +
-        '<input type="text" id="gateName" placeholder="Seu nome" required autocomplete="name">' +
+    '<div id="leadGateStep1">' +
+      '<form id="leadGateForm">' +
+        '<div class="form-group">' +
+          '<label for="gateName">Nome completo</label>' +
+          '<input type="text" id="gateName" placeholder="Seu nome" required autocomplete="name">' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label for="gateEmail">E-mail</label>' +
+          '<input type="email" id="gateEmail" placeholder="seu@empresa.com.br" required autocomplete="email">' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label for="gatePhone">WhatsApp</label>' +
+          '<input type="tel" id="gatePhone" placeholder="(62) 99999-9999" required autocomplete="tel">' +
+        '</div>' +
+        '<div id="leadGateError" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>' +
+        '<button type="submit" class="btn-primary" id="leadGateBtn">' +
+          'Enviar Código de Verificação' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+        '</button>' +
+      '</form>' +
+    '</div>' +
+    '<div id="leadGateStep2" style="display:none;">' +
+      '<div style="text-align:center;margin-bottom:20px;">' +
+        '<div style="width:56px;height:56px;background:#e8effc;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">' +
+          '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>' +
+        '</div>' +
+        '<p style="font-size:15px;color:var(--gray-700);">Enviamos um código de 6 dígitos para</p>' +
+        '<p style="font-size:15px;font-weight:700;color:var(--dark);" id="leadGateEmailSent"></p>' +
       '</div>' +
-      '<div class="form-group">' +
-        '<label for="gateEmail">E-mail</label>' +
-        '<input type="email" id="gateEmail" placeholder="seu@empresa.com.br" required autocomplete="email">' +
+      '<form id="leadVerifyForm">' +
+        '<div class="form-group">' +
+          '<label for="verifyCode">Código de verificação</label>' +
+          '<input type="text" id="verifyCode" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autocomplete="one-time-code" style="text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;font-family:monospace;">' +
+        '</div>' +
+        '<div id="verifyError" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>' +
+        '<button type="submit" class="btn-primary" id="verifyBtn">' +
+          'Verificar e Liberar Acesso' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
+        '</button>' +
+      '</form>' +
+      '<div style="text-align:center;margin-top:14px;">' +
+        '<button type="button" id="resendBtn" style="background:none;border:none;color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Reenviar código</button>' +
+        '<p style="font-size:12px;color:var(--gray-500);margin-top:6px;">O código expira em 10 minutos</p>' +
       '</div>' +
-      '<div class="form-group">' +
-        '<label for="gatePhone">WhatsApp</label>' +
-        '<input type="tel" id="gatePhone" placeholder="(11) 99999-9999" required autocomplete="tel">' +
+    '</div>' +
+    '<div id="leadGateStep3" style="display:none;text-align:center;">' +
+      '<div style="width:64px;height:64px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">' +
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
       '</div>' +
-      '<button type="submit" class="btn-primary">' +
-        'Liberar Acesso Gratuito' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
-      '</button>' +
-    '</form>' +
+      '<h2 style="font-size:22px;color:var(--dark);margin-bottom:8px;">E-mail verificado!</h2>' +
+      '<p style="color:var(--gray-600);font-size:15px;">Seu acesso ao simulador foi liberado com sucesso.</p>' +
+    '</div>' +
     '<div class="lead-trust">' +
       '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Dados protegidos</span>' +
       '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 100% gratuito</span>' +
@@ -84,41 +118,196 @@ function showLeadGateModal(callback) {
   '</div>';
   document.body.appendChild(modal);
 
-  document.getElementById('leadGateForm').addEventListener('submit', function(e) {
+  // Recuperar lead_id do localStorage caso exista (ex: popup overlay já salvou)
+  function getLeadId() {
+    try {
+      var lead = JSON.parse(localStorage.getItem('simulador_lead') || 'null');
+      return lead ? lead.lead_id : null;
+    } catch(e) { return null; }
+  }
+
+  // Step 1: Enviar dados e receber código
+  document.getElementById('leadGateForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    var data = {
-      name: document.getElementById('gateName').value,
-      email: document.getElementById('gateEmail').value,
-      phone: document.getElementById('gatePhone').value,
-      timestamp: new Date().toISOString()
-    };
-    var leads = JSON.parse(localStorage.getItem('leads') || '[]');
-    leads.push(data);
-    localStorage.setItem('leads', JSON.stringify(leads));
-    modal.remove();
-    if (callback) callback();
+    var btn = document.getElementById('leadGateBtn');
+    var errDiv = document.getElementById('leadGateError');
+    errDiv.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+      var res = await fetch(API_LEAD, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'save',
+          nome: document.getElementById('gateName').value,
+          email: document.getElementById('gateEmail').value,
+          telefone: document.getElementById('gatePhone').value
+        })
+      });
+      var result = await res.json();
+
+      if (!res.ok) {
+        errDiv.textContent = result.error || 'Erro ao enviar. Tente novamente.';
+        errDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Enviar Código de Verificação';
+        return;
+      }
+
+      saveLeadLocal({ lead_id: result.lead_id, email: document.getElementById('gateEmail').value, verified: false });
+
+      // Mostrar step 2
+      document.getElementById('leadGateStep1').style.display = 'none';
+      document.getElementById('leadGateStep2').style.display = 'block';
+      document.getElementById('leadGateEmailSent').textContent = document.getElementById('gateEmail').value;
+      document.getElementById('verifyCode').focus();
+
+    } catch(err) {
+      errDiv.textContent = 'Erro de conexão. Verifique sua internet.';
+      errDiv.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enviar Código de Verificação';
+    }
   });
+
+  // Step 2: Verificar código
+  document.getElementById('leadVerifyForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var btn = document.getElementById('verifyBtn');
+    var errDiv = document.getElementById('verifyError');
+    var leadId = getLeadId();
+    errDiv.style.display = 'none';
+
+    if (!leadId) {
+      errDiv.textContent = 'Erro: cadastro não encontrado. Preencha o formulário novamente.';
+      errDiv.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Verificando...';
+
+    try {
+      var res = await fetch(API_LEAD, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'verify',
+          lead_id: leadId,
+          codigo: document.getElementById('verifyCode').value
+        })
+      });
+      var result = await res.json();
+
+      if (!res.ok) {
+        errDiv.textContent = result.error || 'Código inválido.';
+        errDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Verificar e Liberar Acesso';
+        document.getElementById('verifyCode').value = '';
+        document.getElementById('verifyCode').focus();
+        return;
+      }
+
+      // Sucesso!
+      saveLeadLocal({ lead_id: leadId, verified: true });
+      document.getElementById('leadGateStep2').style.display = 'none';
+      document.getElementById('leadGateStep3').style.display = 'block';
+
+      setTimeout(function() {
+        modal.remove();
+        unlockSimulator();
+        if (callback) callback();
+      }, 1500);
+
+    } catch(err) {
+      errDiv.textContent = 'Erro de conexão. Tente novamente.';
+      errDiv.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Verificar e Liberar Acesso';
+    }
+  });
+
+  // Reenviar código
+  document.getElementById('resendBtn').addEventListener('click', async function() {
+    var btn = this;
+    var leadId = getLeadId();
+    if (!leadId) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Reenviando...';
+
+    try {
+      var res = await fetch(API_LEAD, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'resend', lead_id: leadId })
+      });
+      var result = await res.json();
+
+      if (!res.ok) {
+        var errDiv = document.getElementById('verifyError');
+        errDiv.textContent = result.error || 'Erro ao reenviar.';
+        errDiv.style.display = 'block';
+      } else {
+        btn.textContent = 'Código reenviado!';
+        document.getElementById('verifyCode').value = '';
+        document.getElementById('verifyCode').focus();
+      }
+    } catch(err) {
+      btn.textContent = 'Erro ao reenviar';
+    }
+
+    setTimeout(function() {
+      btn.disabled = false;
+      btn.textContent = 'Reenviar código';
+    }, 3000);
+  });
+
+  // Se já tem lead_id no localStorage (vindo do popup overlay), pular para step 2
+  var existingLeadId = getLeadId();
+  var existingLead = JSON.parse(localStorage.getItem('simulador_lead') || 'null');
+  if (existingLeadId && existingLead && !existingLead.verified) {
+    document.getElementById('leadGateStep1').style.display = 'none';
+    document.getElementById('leadGateStep2').style.display = 'block';
+    document.getElementById('leadGateEmailSent').textContent = existingLead.email || '';
+    setTimeout(function() { document.getElementById('verifyCode').focus(); }, 100);
+  }
 }
 
-// ==================== LEAD CAPTURE ====================
+// ==================== LEAD CAPTURE (popup overlay) ====================
 async function handleLeadSubmit(e) {
   e.preventDefault();
-  const data = {
-    name: document.getElementById('leadName').value,
-    email: document.getElementById('leadEmail').value,
-    phone: document.getElementById('leadPhone').value,
-    timestamp: new Date().toISOString()
-  };
+  var btn = e.target.querySelector('.btn-primary');
+  var nome = document.getElementById('leadName').value;
+  var email = document.getElementById('leadEmail').value;
+  var telefone = document.getElementById('leadPhone').value;
 
-  // Store lead locally
-  const leads = JSON.parse(localStorage.getItem('leads') || '[]');
-  leads.push(data);
-  localStorage.setItem('leads', JSON.stringify(leads));
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
 
-  // Fechar overlay e desbloquear simulador
-  document.getElementById('leadOverlay').classList.add('hidden');
-  unlockSimulator();
+  try {
+    var res = await fetch(API_LEAD, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save', nome: nome, email: email, telefone: telefone })
+    });
+    var result = await res.json();
 
+    if (res.ok && result.lead_id) {
+      saveLeadLocal({ lead_id: result.lead_id, email: email, verified: false });
+      document.getElementById('leadOverlay').classList.add('hidden');
+      // Abrir modal de verificação (detecta lead_id no localStorage e pula para step 2)
+      showLeadGateModal(function() { unlockSimulator(); });
+    }
+  } catch(err) {
+    console.error('Lead submit error:', err);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'Acessar Simulador <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
   return false;
 }
 
@@ -127,13 +316,13 @@ document.getElementById('leadClose').addEventListener('click', function() {
   document.getElementById('leadOverlay').classList.add('hidden');
 });
 
-// Desbloquear simulador se lead já foi capturado
+// Desbloquear simulador se lead já foi verificado
 function unlockSimulator() {
   var overlay = document.getElementById('simLockOverlay');
   if (overlay) overlay.classList.add('unlocked');
 }
 
-if (isLeadCaptured()) {
+if (isLeadVerified()) {
   unlockSimulator();
   document.getElementById('leadOverlay').classList.add('hidden');
 } else {
