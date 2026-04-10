@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /server/
+Disallow: /js/data.js
+
+Sitemap: https://simplificatributo.com.br/sitemap.xml

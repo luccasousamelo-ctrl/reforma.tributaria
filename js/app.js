@@ -19,6 +19,87 @@ function formatPct(n) {
   return n.toFixed(2).replace('.', ',') + '%';
 }
 
+// ==================== DEBOUNCE ====================
+function debounce(fn, delay) {
+  let timer;
+  return function() {
+    clearTimeout(timer);
+    timer = setTimeout(fn, delay);
+  };
+}
+
+// ==================== LEAD GATE ====================
+function isLeadCaptured() {
+  return !!localStorage.getItem('leads');
+}
+
+function guardLeadGate(callback) {
+  if (isLeadCaptured()) {
+    callback();
+    return true;
+  }
+  showLeadGateModal(callback);
+  return false;
+}
+
+function showLeadGateModal(callback) {
+  // Se já existe um modal, remove
+  var existing = document.getElementById('leadGateModal');
+  if (existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.className = 'lead-overlay';
+  modal.id = 'leadGateModal';
+  modal.innerHTML = '<div class="lead-card">' +
+    '<button class="lead-close" onclick="this.closest(\'.lead-overlay\').remove()" aria-label="Fechar">&times;</button>' +
+    '<div class="lead-badge">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>' +
+      'Acesso Gratuito' +
+    '</div>' +
+    '<h2>Cadastre-se e <span>simule gratuitamente</span></h2>' +
+    '<p class="lead-sub">Sem custos. Acesso completo a todas as simulações e tabelas.</p>' +
+    '<form id="leadGateForm">' +
+      '<div class="form-group">' +
+        '<label for="gateName">Nome completo</label>' +
+        '<input type="text" id="gateName" placeholder="Seu nome" required autocomplete="name">' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label for="gateEmail">E-mail</label>' +
+        '<input type="email" id="gateEmail" placeholder="seu@empresa.com.br" required autocomplete="email">' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label for="gatePhone">WhatsApp</label>' +
+        '<input type="tel" id="gatePhone" placeholder="(11) 99999-9999" required autocomplete="tel">' +
+      '</div>' +
+      '<button type="submit" class="btn-primary">' +
+        'Liberar Acesso Gratuito' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+      '</button>' +
+    '</form>' +
+    '<div class="lead-trust">' +
+      '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Dados protegidos</span>' +
+      '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 100% gratuito</span>' +
+      '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> +12.000 empresas</span>' +
+    '</div>' +
+  '</div>';
+  document.body.appendChild(modal);
+
+  document.getElementById('leadGateForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var data = {
+      name: document.getElementById('gateName').value,
+      email: document.getElementById('gateEmail').value,
+      phone: document.getElementById('gatePhone').value,
+      timestamp: new Date().toISOString()
+    };
+    var leads = JSON.parse(localStorage.getItem('leads') || '[]');
+    leads.push(data);
+    localStorage.setItem('leads', JSON.stringify(leads));
+    modal.remove();
+    if (callback) callback();
+  });
+}
+
 // ==================== LEAD CAPTURE ====================
 async function handleLeadSubmit(e) {
   e.preventDefault();
@@ -26,9 +107,6 @@ async function handleLeadSubmit(e) {
     name: document.getElementById('leadName').value,
     email: document.getElementById('leadEmail').value,
     phone: document.getElementById('leadPhone').value,
-    cnpj: document.getElementById('leadCnpj').value,
-    regime: document.getElementById('leadRegime').value,
-    segment: document.getElementById('leadSegment').value,
     timestamp: new Date().toISOString()
   };
 
@@ -37,35 +115,40 @@ async function handleLeadSubmit(e) {
   leads.push(data);
   localStorage.setItem('leads', JSON.stringify(leads));
 
-  // Fechar overlay imediatamente
+  // Fechar overlay e desbloquear simulador
   document.getElementById('leadOverlay').classList.add('hidden');
-
-  // Pre-fill simulator regime
-  if (data.regime === 'simples') showTab('simples');
-  else if (data.regime === 'presumido') showTab('presumido');
-  else if (data.regime === 'real') showTab('real');
-
-  // Criar cliente no Asaas em background (não bloqueia a UI)
-  if (data.cnpj && data.cnpj.replace(/\D/g, '').length >= 11) {
-    createCustomer({
-      name: data.name,
-      email: data.email,
-      cpfCnpj: data.cnpj,
-      mobilePhone: data.phone,
-    }).then(result => {
-      if (result.customer) setCustomerState(result.customer);
-    }).catch(err => {
-      console.log('Lead salvo localmente, Asaas indisponivel:', err.message);
-    });
-  }
+  unlockSimulator();
 
   return false;
 }
 
-// Check if already submitted
-if (localStorage.getItem('leads')) {
+// Botão de fechar o popup
+document.getElementById('leadClose').addEventListener('click', function() {
   document.getElementById('leadOverlay').classList.add('hidden');
+});
+
+// Desbloquear simulador se lead já foi capturado
+function unlockSimulator() {
+  var overlay = document.getElementById('simLockOverlay');
+  if (overlay) overlay.classList.add('unlocked');
 }
+
+if (isLeadCaptured()) {
+  unlockSimulator();
+  document.getElementById('leadOverlay').classList.add('hidden');
+} else {
+  // Popup com timer para quem navega sem cadastrar
+  setTimeout(function() {
+    document.getElementById('leadOverlay').classList.remove('hidden');
+  }, 5000);
+}
+
+// Botão "Desbloquear Simulador" abre o formulário de lead
+document.getElementById('btnDesbloquear').addEventListener('click', function() {
+  showLeadGateModal(function() {
+    unlockSimulator();
+  });
+});
 
 // ==================== TABS ====================
 function showTab(tabId) {
@@ -86,7 +169,7 @@ function setToggle(btn, inputId, value) {
 
 // ==================== SIMPLES NACIONAL ====================
 function calcSimples() {
-  if (!guardSimulation(_calcSimples)) return;
+  _calcSimples();
 }
 function _calcSimples() {
   const fat = parseCurrency(document.getElementById('sn-faturamento').value);
@@ -373,7 +456,7 @@ function _calcSimples() {
 
 // ==================== LUCRO PRESUMIDO ====================
 function calcPresumido() {
-  if (!guardSimulation(_calcPresumido)) return;
+  _calcPresumido();
 }
 function _calcPresumido() {
   const fat = parseCurrency(document.getElementById('lp-faturamento').value);
@@ -510,7 +593,7 @@ function _calcPresumido() {
 
 // ==================== LUCRO REAL ====================
 function calcReal() {
-  if (!guardSimulation(_calcReal)) return;
+  _calcReal();
 }
 function _calcReal() {
   const regimePis = document.getElementById('lr-regime-pis').value;
@@ -702,8 +785,6 @@ function renderCST(data) {
 
   countEl.textContent = `Exibindo ${data.length} de ${cstData.length} registros — Clique no produto para ver o relatório completo`;
 
-  // Aplicar paywall nas linhas extras
-  setTimeout(() => applyTablePaywall('cst-scroll', PAYWALL.FREE_TABLE_ROWS), 50);
 }
 
 function filterCST() {
@@ -763,7 +844,7 @@ function showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total
   if (prev) prev.remove();
 
   const modal = document.createElement('div');
-  modal.className = 'paywall-modal-overlay';
+  modal.className = 'report-modal-overlay';
   modal.id = 'productReportModal';
   modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
   modal.innerHTML = `
@@ -940,8 +1021,6 @@ function renderNBS(data) {
 
   countEl.textContent = `Exibindo ${data.length} de ${nbsData.length} registros — Clique no serviço para ver o relatório completo`;
 
-  // Aplicar paywall nas linhas extras
-  setTimeout(() => applyTablePaywall('nbs-scroll', PAYWALL.FREE_TABLE_ROWS), 50);
 }
 
 function filterNBS() {
@@ -1007,7 +1086,7 @@ function showServiceReport(item, nbs, desc, local, cc, ccNome, categ) {
   if (prev) prev.remove();
 
   const modal = document.createElement('div');
-  modal.className = 'paywall-modal-overlay';
+  modal.className = 'report-modal-overlay';
   modal.id = 'serviceReportModal';
   modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
   modal.innerHTML = `
@@ -1162,3 +1241,7 @@ function toggleFaq(btn) {
 // ==================== INIT ====================
 renderCST(cstData);
 renderNBS(nbsData);
+
+// Debounced search for CST/NBS filters
+document.getElementById('cst-search').addEventListener('keyup', debounce(filterCST, 300));
+document.getElementById('nbs-search').addEventListener('keyup', debounce(filterNBS, 300));
