@@ -19,6 +19,72 @@ function formatPct(n) {
   return n.toFixed(2).replace('.', ',') + '%';
 }
 
+// ==================== UI FEEDBACK ====================
+function showToast(message, type) {
+  type = type || 'error';
+  var existing = document.querySelectorAll('.toast');
+  existing.forEach(function(t) { t.remove(); });
+
+  var icons = { error: '\u26a0\ufe0f', success: '\u2705', info: '\u2139\ufe0f' };
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.innerHTML = '<span class="toast-icon">' + (icons[type] || '') + '</span><span>' + message + '</span>';
+  document.body.appendChild(toast);
+
+  setTimeout(function() {
+    toast.classList.add('toast-out');
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 4000);
+}
+
+function showFormError(containerId, message) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  var existing = container.querySelector('.sim-form-alert');
+  if (existing) existing.remove();
+
+  var el = document.createElement('div');
+  el.className = 'sim-form-alert alert-error';
+  el.innerHTML = '<span>\u26a0\ufe0f</span><span>' + message + '</span>';
+  container.insertBefore(el, container.querySelector('.sim-form') || container.firstChild);
+
+  setTimeout(function() { el.remove(); }, 6000);
+}
+
+function setFieldError(groupId, message) {
+  var group = document.getElementById(groupId);
+  if (!group) return;
+  clearFieldError(groupId);
+  group.classList.add('has-error');
+  var err = document.createElement('div');
+  err.className = 'field-error';
+  err.textContent = message;
+  group.appendChild(err);
+}
+
+function clearFieldError(groupId) {
+  var group = document.getElementById(groupId);
+  if (!group) return;
+  group.classList.remove('has-error');
+  var err = group.querySelector('.field-error');
+  if (err) err.remove();
+}
+
+function clearAllFieldErrors(form) {
+  if (!form) return;
+  form.querySelectorAll('.has-error').forEach(function(g) { g.classList.remove('has-error'); });
+  form.querySelectorAll('.field-error').forEach(function(e) { e.remove(); });
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePhone(phone) {
+  var digits = phone.replace(/\D/g, '');
+  return digits.length >= 10 && digits.length <= 13;
+}
+
 // ==================== DEBOUNCE ====================
 function debounce(fn, delay) {
   let timer;
@@ -59,18 +125,18 @@ function showLeadGateModal(callback) {
     '<h2>Cadastre-se e <span>simule gratuitamente</span></h2>' +
     '<p class="lead-sub">Sem custos. Acesso completo a todas as simulações e tabelas.</p>' +
     '<div id="leadGateStep1">' +
-      '<form id="leadGateForm">' +
-        '<div class="form-group">' +
+      '<form id="leadGateForm" novalidate>' +
+        '<div class="form-group" id="fg-gateName">' +
           '<label for="gateName">Nome completo</label>' +
-          '<input type="text" id="gateName" placeholder="Seu nome" required autocomplete="name">' +
+          '<input type="text" id="gateName" placeholder="Seu nome" autocomplete="name">' +
         '</div>' +
-        '<div class="form-group">' +
+        '<div class="form-group" id="fg-gateEmail">' +
           '<label for="gateEmail">E-mail</label>' +
-          '<input type="email" id="gateEmail" placeholder="seu@empresa.com.br" required autocomplete="email">' +
+          '<input type="email" id="gateEmail" placeholder="seu@empresa.com.br" autocomplete="email">' +
         '</div>' +
-        '<div class="form-group">' +
+        '<div class="form-group" id="fg-gatePhone">' +
           '<label for="gatePhone">WhatsApp</label>' +
-          '<input type="tel" id="gatePhone" placeholder="(62) 99999-9999" required autocomplete="tel">' +
+          '<input type="tel" id="gatePhone" placeholder="(62) 99999-9999" autocomplete="tel">' +
         '</div>' +
         '<div id="leadGateError" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>' +
         '<button type="submit" class="btn-primary" id="leadGateBtn">' +
@@ -87,10 +153,10 @@ function showLeadGateModal(callback) {
         '<p style="font-size:15px;color:var(--gray-700);">Enviamos um código de 6 dígitos para</p>' +
         '<p style="font-size:15px;font-weight:700;color:var(--dark);" id="leadGateEmailSent"></p>' +
       '</div>' +
-      '<form id="leadVerifyForm">' +
-        '<div class="form-group">' +
+      '<form id="leadVerifyForm" novalidate>' +
+        '<div class="form-group" id="fg-verifyCode">' +
           '<label for="verifyCode">Código de verificação</label>' +
-          '<input type="text" id="verifyCode" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autocomplete="one-time-code" style="text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;font-family:monospace;">' +
+          '<input type="text" id="verifyCode" placeholder="000000" maxlength="6" autocomplete="one-time-code" style="text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;font-family:monospace;">' +
         '</div>' +
         '<div id="verifyError" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>' +
         '<button type="submit" class="btn-primary" id="verifyBtn">' +
@@ -132,6 +198,30 @@ function showLeadGateModal(callback) {
     var btn = document.getElementById('leadGateBtn');
     var errDiv = document.getElementById('leadGateError');
     errDiv.style.display = 'none';
+    clearFieldError('fg-gateName');
+    clearFieldError('fg-gateEmail');
+    clearFieldError('fg-gatePhone');
+
+    // Validação customizada
+    var nome = document.getElementById('gateName').value.trim();
+    var email = document.getElementById('gateEmail').value.trim();
+    var phone = document.getElementById('gatePhone').value.trim();
+    var hasError = false;
+
+    if (!nome || nome.length < 2) {
+      setFieldError('fg-gateName', 'Preencha seu nome para continuar.');
+      hasError = true;
+    }
+    if (!email || !validateEmail(email)) {
+      setFieldError('fg-gateEmail', 'Informe um e-mail válido.');
+      hasError = true;
+    }
+    if (!phone || !validatePhone(phone)) {
+      setFieldError('fg-gatePhone', 'Digite um WhatsApp válido com DDD.');
+      hasError = true;
+    }
+    if (hasError) return;
+
     btn.disabled = true;
     btn.textContent = 'Enviando...';
 
@@ -179,10 +269,17 @@ function showLeadGateModal(callback) {
     var errDiv = document.getElementById('verifyError');
     var leadId = getLeadId();
     errDiv.style.display = 'none';
+    clearFieldError('fg-verifyCode');
 
     if (!leadId) {
-      errDiv.textContent = 'Erro: cadastro não encontrado. Preencha o formulário novamente.';
+      errDiv.textContent = 'Cadastro não encontrado. Preencha o formulário novamente.';
       errDiv.style.display = 'block';
+      return;
+    }
+
+    var codigo = document.getElementById('verifyCode').value.trim();
+    if (!codigo || codigo.length !== 6 || !/^\d{6}$/.test(codigo)) {
+      setFieldError('fg-verifyCode', 'Digite o código de 6 dígitos enviado para seu e-mail.');
       return;
     }
 
@@ -281,9 +378,29 @@ function showLeadGateModal(callback) {
 async function handleLeadSubmit(e) {
   e.preventDefault();
   var btn = e.target.querySelector('.btn-primary');
-  var nome = document.getElementById('leadName').value;
-  var email = document.getElementById('leadEmail').value;
-  var telefone = document.getElementById('leadPhone').value;
+  var nome = document.getElementById('leadName').value.trim();
+  var email = document.getElementById('leadEmail').value.trim();
+  var telefone = document.getElementById('leadPhone').value.trim();
+
+  // Validação customizada
+  clearFieldError('fg-leadName');
+  clearFieldError('fg-leadEmail');
+  clearFieldError('fg-leadPhone');
+  var hasError = false;
+
+  if (!nome || nome.length < 2) {
+    setFieldError('fg-leadName', 'Preencha seu nome para continuar.');
+    hasError = true;
+  }
+  if (!email || !validateEmail(email)) {
+    setFieldError('fg-leadEmail', 'Informe um e-mail válido.');
+    hasError = true;
+  }
+  if (!telefone || !validatePhone(telefone)) {
+    setFieldError('fg-leadPhone', 'Digite um WhatsApp válido com DDD.');
+    hasError = true;
+  }
+  if (hasError) return false;
 
   btn.disabled = true;
   btn.textContent = 'Enviando...';
@@ -299,11 +416,12 @@ async function handleLeadSubmit(e) {
     if (res.ok && result.lead_id) {
       saveLeadLocal({ lead_id: result.lead_id, email: email, verified: false });
       document.getElementById('leadOverlay').classList.add('hidden');
-      // Abrir modal de verificação (detecta lead_id no localStorage e pula para step 2)
       showLeadGateModal(function() { unlockSimulator(); });
+    } else {
+      showToast(result.error || 'Não foi possível concluir. Tente novamente.', 'error');
     }
   } catch(err) {
-    console.error('Lead submit error:', err);
+    showToast('Erro de conexão. Verifique sua internet.', 'error');
   }
 
   btn.disabled = false;
@@ -369,7 +487,7 @@ function _calcSimples() {
   const pctB2B = parseFloat(document.getElementById('sn-pctB2B').value) / 100;
   const compras = parseCurrency(document.getElementById('sn-compras').value);
 
-  if (!fat || !rbt12) { alert('Preencha o faturamento mensal e anual.'); return; }
+  if (!fat || !rbt12) { showFormError('panel-simples', 'Preencha o faturamento mensal e o faturamento anual para simular.'); return; }
 
   // ============================================================
   // LC 123/2006 (alterada pela LC 155/2016) — Tabelas oficiais
@@ -655,7 +773,7 @@ function _calcPresumido() {
   const icmsEstado = parseFloat(document.getElementById('lp-estado').value);
   const issAliq = parseFloat(document.getElementById('lp-iss').value) / 100;
 
-  if (!fat) { alert('Preencha o faturamento mensal.'); return; }
+  if (!fat) { showFormError('panel-presumido', 'Preencha o faturamento mensal para simular.'); return; }
 
   // PIS 0,65% + COFINS 3,00% (cumulativo) = 3,65% (LC 9.718/98 e LC 10.833/03)
   const PIS_COFINS_ATUAL = 0.0365;
@@ -793,7 +911,7 @@ function _calcReal() {
   const creditosPct = parseFloat(document.getElementById('lr-creditos-pct').value) / 100;
   const reducao = parseFloat(document.getElementById('lr-reducao').value) / 100;
 
-  if (!fat) { alert('Preencha o faturamento mensal.'); return; }
+  if (!fat) { showFormError('panel-real', 'Preencha o faturamento mensal para simular.'); return; }
 
   // PIS/COFINS conforme regime selecionado
   const isCumulativo = regimePis === 'cumulativo';
