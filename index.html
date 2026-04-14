@@ -184,6 +184,7 @@
       <li><a href="#consulta-cst">CST / CClass</a></li>
       <li><a href="#consulta-nbs">Serviços NBS</a></li>
       <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://blog.simplificatributo.com.br" style="color:#2563eb;font-weight:700">Blog</a></li>
     </ul>
     <a href="https://wa.me/5562999939810?text=Olá! Quero saber mais sobre consultoria tributária." class="navbar-cta" target="_blank" rel="noopener">Falar com Especialista</a>
     <button class="mobile-toggle" onclick="document.querySelector('.navbar-links').classList.toggle('show')">
@@ -773,6 +774,18 @@
 </section>
 
 <!-- ==================== FOOTER ==================== -->
+<!-- Blog -->
+<section style="padding:60px 0;background:#f8fafc">
+  <div style="max-width:1100px;margin:0 auto;padding:0 20px">
+    <div style="text-align:center;margin-bottom:32px"><h2 style="font-size:24px;font-weight:800;color:#1e293b">Blog Simplifica Tributo</h2><p style="color:#64748b;font-size:14px">Tudo sobre a Reforma Tributária e como se preparar</p></div>
+    <div id="blogGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px"></div>
+    <div style="text-align:center;margin-top:24px"><a href="https://blog.simplificatributo.com.br" style="display:inline-block;padding:10px 24px;border:1px solid #2563eb;color:#2563eb;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">Ver todos os artigos →</a></div>
+  </div>
+</section>
+<script>
+fetch('https://wvfceibnzxrzdueoablw.supabase.co/rest/v1/blog_artigos?empresa=eq.simplificatributo&status=eq.publicado&select=titulo,slug,meta_description,image_url,created_at&order=created_at.desc&limit=3',{headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2ZmNlaWJuenhyemR1ZW9hYmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MjA2MjgsImV4cCI6MjA5MDA5NjYyOH0.eKQdaIO9079hogoRNLHzTUB9ElGdJToNxNWo8-d1sBA'}}).then(r=>r.json()).then(a=>{var g=document.getElementById('blogGrid');if(!a||!a.length){g.innerHTML='<p style="text-align:center;color:#94a3b8;padding:40px">Em breve novos conteúdos!</p>';return;}g.innerHTML=a.map(function(p){var d=new Date(p.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});var img=p.image_url?'<img src="'+p.image_url+'" alt="'+p.titulo+'" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">':'<div style="height:180px;background:linear-gradient(135deg,#2563eb20,#2563eb08)"></div>';return '<a href="https://blog.simplificatributo.com.br/'+p.slug+'" target="_blank" style="background:#fff;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;text-decoration:none;color:inherit;display:block">'+img+'<div style="padding:16px"><h3 style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px">'+p.titulo+'</h3><p style="font-size:12px;color:#64748b;margin-bottom:8px">'+(p.meta_description||'').substring(0,100)+'...</p><span style="font-size:11px;color:#94a3b8">📅 '+d+'</span></div></a>';}).join('');}).catch(function(){document.getElementById('blogGrid').innerHTML='<p style="text-align:center;color:#94a3b8;padding:40px">Em breve novos conteúdos!</p>';});
+</script>
+
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
