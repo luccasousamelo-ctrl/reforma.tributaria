@@ -126,13 +126,13 @@
 
 <!-- ==================== LEAD CAPTURE OVERLAY ==================== -->
 <div class="lead-overlay hidden" id="leadOverlay">
-  <div class="lead-card">
+  <div class="lead-card" role="dialog" aria-modal="true" aria-labelledby="leadCardTitle">
     <button class="lead-close" id="leadClose" aria-label="Fechar">&times;</button>
     <div class="lead-badge">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       Acesso ao Simulador
     </div>
-    <h2>Simule o Impacto da <span>Reforma Tributária</span> no Seu Negócio</h2>
+    <h2 id="leadCardTitle">Simule o Impacto da <span>Reforma Tributária</span> no Seu Negócio</h2>
     <p class="lead-sub">Cadastre-se e acesse gratuitamente o <strong>simulador completo</strong> com cálculos para Simples Nacional, Lucro Presumido e Lucro Real.</p>
 
     <form id="leadForm" onsubmit="return handleLeadSubmit(event)" novalidate>
@@ -184,7 +184,7 @@
       <li><a href="#consulta-cst">CST / CClass</a></li>
       <li><a href="#consulta-nbs">Serviços NBS</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a href="https://blog.simplificatributo.com.br" style="color:#2563eb;font-weight:700">Blog</a></li>
+      <li><a href="https://blog.simplificatributo.com.br" style="color:var(--primary);font-weight:700">Blog</a></li>
     </ul>
     <a href="https://wa.me/5562999939810?text=Olá! Quero saber mais sobre consultoria tributária." class="navbar-cta" target="_blank" rel="noopener">Falar com Especialista</a>
     <button class="mobile-toggle" onclick="document.querySelector('.navbar-links').classList.toggle('show')">
@@ -348,12 +348,17 @@
           <p class="sim-lock-note">Sem custos. Acesso completo e imediato.</p>
         </div>
       </div>
-      <div class="sim-tabs">
-        <button class="sim-tab active" onclick="showTab('simples')">Simples Nacional</button>
-        <button class="sim-tab" onclick="showTab('presumido')">Lucro Presumido</button>
-        <button class="sim-tab" onclick="showTab('real')">Lucro Real</button>
-        <button class="sim-tab" onclick="showTab('cst')">CST / CClassTrib</button>
-        <button class="sim-tab" onclick="showTab('nbs')">Serviços NBS</button>
+      <div class="sim-tabs" role="tablist" aria-label="Tipo de simulação">
+        <button class="sim-tab active" role="tab" aria-selected="true" onclick="showTab('simples')">Simples Nacional</button>
+        <button class="sim-tab" role="tab" aria-selected="false" onclick="showTab('presumido')">Lucro Presumido</button>
+        <button class="sim-tab" role="tab" aria-selected="false" onclick="showTab('real')">Lucro Real</button>
+        <button class="sim-tab" role="tab" aria-selected="false" onclick="showTab('cst')">CST / CClassTrib</button>
+        <button class="sim-tab" role="tab" aria-selected="false" onclick="showTab('nbs')">Serviços NBS</button>
+      </div>
+
+      <div class="sim-phase-note" role="note" style="display:flex;gap:10px;align-items:flex-start;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:14px 16px;margin-bottom:20px;font-size:13px;line-height:1.55;color:#92400e;">
+        <span aria-hidden="true" style="font-size:16px;line-height:1.3;">&#9888;</span>
+        <span>Esta simulação projeta o <strong>regime pleno da Reforma (a partir de 2033)</strong>, com a alíquota de referência de <strong>26,5%</strong>. Na transição — <strong>2026</strong> é fase-teste (CBS 0,9% + IBS 0,1%) e a carga sobe gradualmente até <strong>2032</strong> — você pagará menos do que o projetado aqui. Use o resultado como comparativo do cenário final. Valores estimados; não substituem orientação contábil.</span>
       </div>
 
       <!-- ===== SIMPLES NACIONAL ===== -->
@@ -440,6 +445,7 @@
               <option value="transporte-cargas">Transporte de Cargas (8%)</option>
               <option value="transporte-passageiros">Transporte de Passageiros (16%)</option>
               <option value="servicos-hospitalares">Serviços Hospitalares (8%)</option>
+              <option value="servicos-liberais">Profissional Liberal Regulamentado (32%)</option>
             </select>
           </div>
           <div>
@@ -536,8 +542,9 @@
             <label>Setor com Alíquota Reduzida?</label>
             <select id="lr-reducao">
               <option value="0">Não - Alíquota Padrão (26,5%)</option>
-              <option value="40">Redução de 40% (Saúde, Educação)</option>
-              <option value="60">Redução de 60% (Transporte, Agro)</option>
+              <option value="30">Redução de 30% (Profissionais liberais: advocacia, medicina, engenharia, contabilidade...)</option>
+              <option value="40">Redução de 40% (Transporte coletivo de passageiros)</option>
+              <option value="60">Redução de 60% (Saúde, Educação, Agro, Medicamentos, Cultura)</option>
               <option value="100">Isento (Cesta Básica Nacional)</option>
             </select>
           </div>
@@ -574,7 +581,8 @@
           <button class="filter-chip" onclick="filterCSTCateg(this, 'seletivo')">Imp. Seletivo</button>
         </div>
 
-        <div id="cst-count" style="font-size:13px;color:var(--gray-500);margin-bottom:12px;"></div>
+        <div id="cst-count" style="font-size:13px;color:var(--gray-600);margin-bottom:12px;"></div>
+        <p class="table-scroll-hint">← deslize a tabela para ver todas as colunas →</p>
 
         <div style="overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:var(--radius);position:relative;" id="cst-scroll">
           <table class="lookup-table" id="cst-table" style="margin:0;">
@@ -632,7 +640,8 @@
           <button class="filter-chip" onclick="filterNBSCateg(this, 'isento')">Isento / Imune</button>
         </div>
 
-        <div id="nbs-count" style="font-size:13px;color:var(--gray-500);margin-bottom:12px;"></div>
+        <div id="nbs-count" style="font-size:13px;color:var(--gray-600);margin-bottom:12px;"></div>
+        <p class="table-scroll-hint">← deslize a tabela para ver todas as colunas →</p>
 
         <div style="overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:var(--radius);position:relative;" id="nbs-scroll">
           <table class="lookup-table" id="nbs-table" style="margin:0;">
@@ -775,15 +784,15 @@
 
 <!-- ==================== FOOTER ==================== -->
 <!-- Blog -->
-<section style="padding:60px 0;background:#f8fafc">
-  <div style="max-width:1100px;margin:0 auto;padding:0 20px">
-    <div style="text-align:center;margin-bottom:32px"><h2 style="font-size:24px;font-weight:800;color:#1e293b">Blog Simplifica Tributo</h2><p style="color:#64748b;font-size:14px">Tudo sobre a Reforma Tributária e como se preparar</p></div>
+<section style="padding:var(--section-gap) 0;background:var(--gray-100)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 24px">
+    <div style="text-align:center;margin-bottom:32px"><h2 style="font-size:28px;font-weight:800;color:var(--dark)">Blog Simplifica Tributo</h2><p style="color:var(--gray-600);font-size:15px;margin-top:8px">Tudo sobre a Reforma Tributária e como se preparar</p></div>
     <div id="blogGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px"></div>
-    <div style="text-align:center;margin-top:24px"><a href="https://blog.simplificatributo.com.br" style="display:inline-block;padding:10px 24px;border:1px solid #2563eb;color:#2563eb;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">Ver todos os artigos →</a></div>
+    <div style="text-align:center;margin-top:28px"><a href="https://blog.simplificatributo.com.br" style="display:inline-block;padding:11px 24px;border:1px solid var(--primary);color:var(--primary);border-radius:var(--radius);font-size:14px;font-weight:600;text-decoration:none">Ver todos os artigos →</a></div>
   </div>
 </section>
 <script>
-fetch('https://wvfceibnzxrzdueoablw.supabase.co/rest/v1/blog_artigos?empresa=eq.simplificatributo&status=eq.publicado&select=titulo,slug,meta_description,image_url,created_at&order=created_at.desc&limit=3',{headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2ZmNlaWJuenhyemR1ZW9hYmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MjA2MjgsImV4cCI6MjA5MDA5NjYyOH0.eKQdaIO9079hogoRNLHzTUB9ElGdJToNxNWo8-d1sBA'}}).then(r=>r.json()).then(a=>{var g=document.getElementById('blogGrid');if(!a||!a.length){g.innerHTML='<p style="text-align:center;color:#94a3b8;padding:40px">Em breve novos conteúdos!</p>';return;}g.innerHTML=a.map(function(p){var d=new Date(p.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});var img=p.image_url?'<img src="'+p.image_url+'" alt="'+p.titulo+'" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">':'<div style="height:180px;background:linear-gradient(135deg,#2563eb20,#2563eb08)"></div>';return '<a href="https://blog.simplificatributo.com.br/'+p.slug+'" target="_blank" style="background:#fff;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;text-decoration:none;color:inherit;display:block">'+img+'<div style="padding:16px"><h3 style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px">'+p.titulo+'</h3><p style="font-size:12px;color:#64748b;margin-bottom:8px">'+(p.meta_description||'').substring(0,100)+'...</p><span style="font-size:11px;color:#94a3b8">📅 '+d+'</span></div></a>';}).join('');}).catch(function(){document.getElementById('blogGrid').innerHTML='<p style="text-align:center;color:#94a3b8;padding:40px">Em breve novos conteúdos!</p>';});
+fetch('https://wvfceibnzxrzdueoablw.supabase.co/rest/v1/blog_artigos?empresa=eq.simplificatributo&status=eq.publicado&select=titulo,slug,meta_description,image_url,created_at&order=created_at.desc&limit=3',{headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2ZmNlaWJuenhyemR1ZW9hYmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MjA2MjgsImV4cCI6MjA5MDA5NjYyOH0.eKQdaIO9079hogoRNLHzTUB9ElGdJToNxNWo8-d1sBA'}}).then(r=>r.json()).then(a=>{var g=document.getElementById('blogGrid');if(!a||!a.length){g.innerHTML='<p style="text-align:center;color:var(--gray-600);padding:40px">Em breve novos conteúdos!</p>';return;}g.innerHTML=a.map(function(p){var d=new Date(p.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});var img=p.image_url?'<img src="'+p.image_url+'" alt="'+p.titulo+'" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">':'<div style="height:180px;background:linear-gradient(135deg,var(--primary-light),var(--gray-100))"></div>';return '<a href="https://blog.simplificatributo.com.br/'+p.slug+'" target="_blank" style="background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-300);box-shadow:var(--shadow-sm);overflow:hidden;text-decoration:none;color:inherit;display:block">'+img+'<div style="padding:16px"><h3 style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px">'+p.titulo+'</h3><p style="font-size:12px;color:var(--gray-600);margin-bottom:8px">'+(p.meta_description||'').substring(0,100)+'...</p><span style="font-size:11px;color:var(--gray-500)">'+d+'</span></div></a>';}).join('');}).catch(function(){document.getElementById('blogGrid').innerHTML='<p style="text-align:center;color:var(--gray-600);padding:40px">Em breve novos conteúdos!</p>';});
 </script>
 
 <footer class="footer">

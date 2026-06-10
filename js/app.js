@@ -459,9 +459,11 @@ document.getElementById('btnDesbloquear').addEventListener('click', function() {
 
 // ==================== TABS ====================
 function showTab(tabId) {
+  const ids = ['simples', 'presumido', 'real', 'cst', 'nbs'];
   document.querySelectorAll('.sim-tab').forEach((t, i) => {
-    const ids = ['simples', 'presumido', 'real', 'cst', 'nbs'];
-    t.classList.toggle('active', ids[i] === tabId);
+    const isActive = ids[i] === tabId;
+    t.classList.toggle('active', isActive);
+    t.setAttribute('aria-selected', isActive ? 'true' : 'false');
   });
   document.querySelectorAll('.sim-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + tabId).classList.add('active');
@@ -484,7 +486,7 @@ function _calcSimples() {
   const atividade = document.getElementById('sn-atividade').value;
   const folha = parseCurrency(document.getElementById('sn-folha').value);
   const clientType = document.getElementById('sn-clientType').value;
-  const pctB2B = parseFloat(document.getElementById('sn-pctB2B').value) / 100;
+  const pctB2B = (parseFloat(document.getElementById('sn-pctB2B').value) || 0) / 100;
   const compras = parseCurrency(document.getElementById('sn-compras').value);
 
   if (!fat || !rbt12) { showFormError('panel-simples', 'Preencha o faturamento mensal e o faturamento anual para simular.'); return; }
@@ -770,8 +772,8 @@ function _calcPresumido() {
   const atividade = document.getElementById('lp-atividade').value;
   const compras = parseCurrency(document.getElementById('lp-compras').value);
   const clientType = document.getElementById('lp-clientType').value;
-  const icmsEstado = parseFloat(document.getElementById('lp-estado').value);
-  const issAliq = parseFloat(document.getElementById('lp-iss').value) / 100;
+  const icmsEstado = parseFloat(document.getElementById('lp-estado').value) || 0;
+  const issAliq = (parseFloat(document.getElementById('lp-iss').value) || 0) / 100;
 
   if (!fat) { showFormError('panel-presumido', 'Preencha o faturamento mensal para simular.'); return; }
 
@@ -786,7 +788,8 @@ function _calcPresumido() {
     industria: { tipo: 'ICMS', aliq: icmsEstado },
     'transporte-cargas': { tipo: 'ICMS', aliq: 0.12 },
     'transporte-passageiros': { tipo: 'ISS', aliq: issAliq },
-    'servicos-hospitalares': { tipo: 'ISS', aliq: issAliq }
+    'servicos-hospitalares': { tipo: 'ISS', aliq: issAliq },
+    'servicos-liberais': { tipo: 'ISS', aliq: issAliq }
   };
 
   let dadosIssIcms = issIcms[atividade] || issIcms['comercio'];
@@ -798,15 +801,20 @@ function _calcPresumido() {
   const IBS_RATE = 0.177;
   const TOTAL_IVA = CBS_RATE + IBS_RATE;
 
-  // Check reduced rates
+  // Alíquotas reduzidas conforme LC 214/2025:
+  // 60% (saúde) | 40% (transporte coletivo de passageiros intermunic./interest.) | 30% (profissionais liberais regulamentados)
+  // Transporte de CARGAS não tem redução prevista → alíquota cheia.
   let aliqEfetiva = TOTAL_IVA;
   let reducaoLabel = '';
   if (atividade === 'servicos-hospitalares') {
-    aliqEfetiva = TOTAL_IVA * 0.4; // 60% reduction
+    aliqEfetiva = TOTAL_IVA * 0.4; // redução de 60% → paga 40% da alíquota
     reducaoLabel = ' (redução de 60%)';
-  } else if (atividade === 'transporte-cargas' || atividade === 'transporte-passageiros') {
-    aliqEfetiva = TOTAL_IVA * 0.4;
-    reducaoLabel = ' (redução de 60%)';
+  } else if (atividade === 'transporte-passageiros') {
+    aliqEfetiva = TOTAL_IVA * 0.6; // redução de 40% → paga 60% da alíquota
+    reducaoLabel = ' (redução de 40%)';
+  } else if (atividade === 'servicos-liberais') {
+    aliqEfetiva = TOTAL_IVA * 0.7; // redução de 30% → paga 70% da alíquota
+    reducaoLabel = ' (redução de 30%)';
   }
 
   let ibsCbsBruto = fat * aliqEfetiva;
@@ -908,8 +916,8 @@ function _calcReal() {
   const atividade = document.getElementById('lr-atividade').value;
   const compras = parseCurrency(document.getElementById('lr-compras').value);
   const despesas = parseCurrency(document.getElementById('lr-despesas').value);
-  const creditosPct = parseFloat(document.getElementById('lr-creditos-pct').value) / 100;
-  const reducao = parseFloat(document.getElementById('lr-reducao').value) / 100;
+  const creditosPct = (parseFloat(document.getElementById('lr-creditos-pct').value) || 0) / 100;
+  const reducao = (parseFloat(document.getElementById('lr-reducao').value) || 0) / 100;
 
   if (!fat) { showFormError('panel-real', 'Preencha o faturamento mensal para simular.'); return; }
 
@@ -1542,7 +1550,8 @@ function showServiceReport(item, nbs, desc, local, cc, ccNome, categ) {
 
 // ==================== FAQ ====================
 function toggleFaq(btn) {
-  btn.parentElement.classList.toggle('open');
+  const isOpen = btn.parentElement.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 }
 
 // ==================== INIT ====================
@@ -1552,3 +1561,72 @@ renderNBS(nbsData);
 // Debounced search for CST/NBS filters
 document.getElementById('cst-search').addEventListener('keyup', debounce(filterCST, 300));
 document.getElementById('nbs-search').addEventListener('keyup', debounce(filterNBS, 300));
+
+// ==================== ACESSIBILIDADE & MOBILE ====================
+(function () {
+  // Teclado numérico no mobile para campos de valor/percentual
+  document.querySelectorAll('input[oninput^="formatCurrency"], #sn-pctB2B, #lp-iss, #lr-creditos-pct')
+    .forEach(function (i) { i.setAttribute('inputmode', 'numeric'); });
+
+  // FAQ: expõe estado aberto/fechado para leitores de tela
+  document.querySelectorAll('.faq-question').forEach(function (b) {
+    if (!b.hasAttribute('aria-expanded')) b.setAttribute('aria-expanded', 'false');
+  });
+
+  // Painéis do simulador como tabpanel
+  document.querySelectorAll('.sim-panel').forEach(function (p) {
+    p.setAttribute('role', 'tabpanel');
+    p.setAttribute('tabindex', '0');
+  });
+
+  // Navegação por seta entre as abas (padrão WAI-ARIA Tabs)
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.sim-tab'));
+  tabs.forEach(function (tab, idx) {
+    tab.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var next = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
+      tabs[next].focus();
+      tabs[next].click();
+    });
+  });
+
+  // Fecha modal/overlay com Esc
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var dyn = Array.prototype.slice.call(document.querySelectorAll('.lead-overlay'))
+      .find(function (el) { return el.id !== 'leadOverlay'; });
+    if (dyn) { dyn.remove(); return; }
+    var overlay = document.getElementById('leadOverlay');
+    if (overlay && !overlay.classList.contains('hidden')) overlay.classList.add('hidden');
+  });
+
+  // Foco no 1º campo quando o popup estático abre
+  var staticOverlay = document.getElementById('leadOverlay');
+  if (staticOverlay && window.MutationObserver) {
+    new MutationObserver(function () {
+      if (!staticOverlay.classList.contains('hidden')) {
+        var f = staticOverlay.querySelector('input');
+        if (f) f.focus();
+      }
+    }).observe(staticOverlay, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  // Modal dinâmico (lead gate): role de diálogo, foco e teclado numérico no OTP
+  if (window.MutationObserver) {
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        Array.prototype.slice.call(m.addedNodes).forEach(function (n) {
+          if (n.nodeType !== 1 || !n.classList || !n.classList.contains('lead-overlay') || n.id === 'leadOverlay') return;
+          var card = n.querySelector('.lead-card') || n;
+          card.setAttribute('role', 'dialog');
+          card.setAttribute('aria-modal', 'true');
+          var otp = n.querySelector('#verifyCode');
+          if (otp) otp.setAttribute('inputmode', 'numeric');
+          var fld = n.querySelector('input');
+          if (fld) setTimeout(function () { fld.focus(); }, 50);
+        });
+      });
+    }).observe(document.body, { childList: true });
+  }
+})();
