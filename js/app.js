@@ -1085,18 +1085,18 @@ function renderCST(data) {
     'seletivo': 'tag-red'
   };
 
-  tbody.innerHTML = data.map((r, idx) => `
+  tbody.innerHTML = data.length ? data.map((r, idx) => `
     <tr style="cursor:pointer;" onclick="showProductReport(${idx}, '${r.ncm}', '${r.desc.replace(/'/g,"\\'")}', '${r.cclass}', '${r.classif.replace(/'/g,"\\'")}', '${r.cst}', '${r.cbs}', '${r.ibs}', '${r.total}', '${r.categ}')" title="Clique para ver o relatório completo">
-      <td><strong>${r.ncm}</strong></td>
-      <td>${r.desc}</td>
-      <td><span class="tag tag-purple">${r.cclass}</span></td>
-      <td><span class="tag ${tagMap[r.categ] || 'tag-blue'}">${r.classif}</span></td>
-      <td><strong>${r.cst}</strong></td>
-      <td>${r.cbs}</td>
-      <td>${r.ibs}</td>
-      <td><strong>${r.total}</strong></td>
+      <td data-label="NCM"><strong>${r.ncm}</strong></td>
+      <td data-label="Descrição">${r.desc}</td>
+      <td data-label="CClassTrib"><span class="tag tag-purple">${r.cclass}</span></td>
+      <td data-label="Classificação"><span class="tag ${tagMap[r.categ] || 'tag-blue'}">${r.classif}</span></td>
+      <td data-label="CST"><strong>${r.cst}</strong></td>
+      <td data-label="Alíq. CBS">${r.cbs}</td>
+      <td data-label="Alíq. IBS">${r.ibs}</td>
+      <td data-label="Total 2026"><strong>${r.total}</strong></td>
     </tr>
-  `).join('');
+  `).join('') : '<tr class="lookup-empty"><td colspan="8">Nenhum produto encontrado. Tente outro NCM, descrição ou código CClassTrib.</td></tr>';
 
   countEl.textContent = `Exibindo ${data.length} de ${cstData.length} registros — Clique no produto para ver o relatório completo`;
 
@@ -1318,21 +1318,21 @@ function renderNBS(data) {
     return 'tag-orange'; // local da prestação, entrega, etc
   };
 
-  tbody.innerHTML = data.map(r => {
+  tbody.innerHTML = data.length ? data.map(r => {
     const safeDesc = r.desc.replace(/'/g, "\\'");
     const safeLocal = (r.local || '').replace(/'/g, "\\'");
     const safeCcNome = r.ccNome.replace(/'/g, "\\'");
     return `
     <tr style="cursor:pointer;" onclick="showServiceReport('${r.item}','${r.nbs}','${safeDesc}','${safeLocal}','${r.cc}','${safeCcNome}','${r.categ}')" title="Clique para ver o relatório completo">
-      <td><strong>${r.item}</strong></td>
-      <td><span class="tag tag-purple">${r.nbs}</span></td>
-      <td>${r.desc}</td>
-      <td><span class="tag ${localTag(r.local)}">${r.local || '—'}</span></td>
-      <td><span class="tag tag-blue">${r.cc}</span></td>
-      <td style="font-size:12px;max-width:200px;">${r.ccNome}</td>
-      <td><span class="tag ${categTag[r.categ] || 'tag-blue'}">${categLabel[r.categ] || r.categ}</span></td>
+      <td data-label="Item LC 116"><strong>${r.item}</strong></td>
+      <td data-label="NBS"><span class="tag tag-purple">${r.nbs}</span></td>
+      <td data-label="Descrição">${r.desc}</td>
+      <td data-label="Local IBS"><span class="tag ${localTag(r.local)}">${r.local || '—'}</span></td>
+      <td data-label="cClassTrib"><span class="tag tag-blue">${r.cc}</span></td>
+      <td data-label="Classificação" style="font-size:12px;max-width:200px;">${r.ccNome}</td>
+      <td data-label="Regime"><span class="tag ${categTag[r.categ] || 'tag-blue'}">${categLabel[r.categ] || r.categ}</span></td>
     </tr>`;
-  }).join('');
+  }).join('') : '<tr class="lookup-empty"><td colspan="7">Nenhum serviço encontrado. Tente outro Item LC 116, código NBS ou descrição.</td></tr>';
 
   countEl.textContent = `Exibindo ${data.length} de ${nbsData.length} registros — Clique no serviço para ver o relatório completo`;
 
