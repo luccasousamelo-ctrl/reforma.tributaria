@@ -1246,7 +1246,7 @@
       box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
       z-index: 9000;
       transition: transform 0.2s, box-shadow 0.2s;
-      animation: wppPulse 2s infinite;
+      animation: wppPulse 2s ease-out 5;
     }
     .wpp-float svg {
       width: 28px;
