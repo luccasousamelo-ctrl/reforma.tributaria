@@ -525,6 +525,26 @@
             </select>
           </div>
           <div>
+            <label>Estado (ICMS)</label>
+            <select id="lr-estado">
+              <option value="0.18">SP — 18%</option>
+              <option value="0.18">MG — 18%</option>
+              <option value="0.20">RJ — 20%</option>
+              <option value="0.195">PR — 19,5%</option>
+              <option value="0.17">RS — 17%</option>
+              <option value="0.17">SC — 17%</option>
+              <option value="0.205">BA — 20,5%</option>
+              <option value="0.205">PE — 20,5%</option>
+              <option value="0.20">CE — 20%</option>
+              <option value="0.19">GO — 19%</option>
+              <option value="0.20">DF — 20%</option>
+              <option value="0.225">PI — 22,5%</option>
+              <option value="0.23">MA — 23%</option>
+              <option value="0.18">Outro — 18% (média)</option>
+            </select>
+            <p class="help-text">Usado apenas para Comércio e Indústria (ICMS)</p>
+          </div>
+          <div>
             <label>Compras com Crédito (R$)</label>
             <input type="text" id="lr-compras" placeholder="600.000,00" oninput="formatCurrency(this)">
           </div>
@@ -627,7 +647,7 @@
         <div id="consulta-nbs"></div>
 
         <div class="lookup-input-group">
-          <input type="text" id="nbs-search" placeholder="Digite o Item LC 116, código NBS ou descrição do serviço...">
+          <input type="text" id="nbs-search" placeholder="ex: advocacia, contabilidade, médico, transporte, 17.19, 1.1302.21.00">
           <button onclick="filterNBS()">Consultar</button>
         </div>
 

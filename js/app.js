@@ -442,16 +442,22 @@ function unlockSimulator() {
 
 // ===== Value-first: 1ª ação de valor é grátis; a partir da 2ª, pede cadastro =====
 // O simulador fica sempre utilizável (sem bloqueio prévio nem popup por timer).
-// "Ação de valor" = rodar uma simulação ou abrir um relatório CST/NBS.
+// "Ação de valor" = uma simulação que PRODUZ resultado ou um relatório CST/NBS.
 var freeCreditUsed = false;
-function leadAllowed(onUnlocked) {
-  if (isLeadVerified()) return true;            // já cadastrado → tudo liberado
-  if (!freeCreditUsed) { freeCreditUsed = true; return true; } // 1ª ação grátis
-  showLeadGateModal(function () {               // 2ª em diante → gate contextual
+
+// Mostra o gate quando a ação grátis já foi usada e o lead não é verificado.
+// IMPORTANTE: NÃO consome o crédito aqui — só em consumeFreeCredit(), e apenas
+// quando a ação realmente gera resultado (um clique em campo vazio não gasta o grátis).
+function gatePending(onUnlocked) {
+  if (isLeadVerified() || !freeCreditUsed) return false;
+  showLeadGateModal(function () {
     unlockSimulator();
     if (typeof onUnlocked === 'function') onUnlocked();
   });
-  return false;
+  return true;
+}
+function consumeFreeCredit() {
+  if (!isLeadVerified()) freeCreditUsed = true;
 }
 
 unlockSimulator();
@@ -485,8 +491,8 @@ function setToggle(btn, inputId, value) {
 
 // ==================== SIMPLES NACIONAL ====================
 function calcSimples() {
-  if (!leadAllowed(calcSimples)) return;
-  _calcSimples();
+  if (gatePending(calcSimples)) return;
+  if (_calcSimples()) consumeFreeCredit();
 }
 function _calcSimples() {
   const fat = parseCurrency(document.getElementById('sn-faturamento').value);
@@ -632,7 +638,10 @@ function _calcSimples() {
     recomendacao = 'Permaneça no Simples tradicional. Seus clientes são consumidores finais e não aproveitam crédito de IBS/CBS.';
     alertClass = 'alert-success';
   } else if (economia > 0 || beneficioCredito > fat * 0.02) {
-    recomendacao = 'Considere recolher IBS/CBS por fora do DAS (LC 214/2025). Seus clientes B2B terão crédito integral de 26,5%, tornando você mais competitivo. Benefício estimado: ' + formatBRL(economia + beneficioCredito) + '/mês.';
+    recomendacao = 'Avalie recolher IBS/CBS por fora do DAS (LC 214/2025): seus clientes B2B passam a tomar crédito integral de 26,5% (no Simples o crédito repassado é reduzido) — ganho de <strong>competitividade</strong> estimado em ' + formatBRL(beneficioCredito) + '/mês. '
+      + (economia >= 0
+          ? 'E ainda há economia de <strong>' + formatBRL(economia) + '/mês</strong> no imposto direto.'
+          : '⚠️ Atenção: esse é um ganho <strong>indireto</strong> (competitividade), <strong>não economia de caixa</strong> — no imposto direto, recolher por fora custa ' + formatBRL(Math.abs(economia)) + '/mês a mais que continuar no Simples.');
     alertClass = 'alert-info';
   } else {
     recomendacao = 'O Simples tradicional parece mais vantajoso no seu caso. A economia com créditos não compensa a carga maior do IBS/CBS separado.';
@@ -769,12 +778,13 @@ function _calcSimples() {
     </div>
   `;
   el.classList.add('show');
+  return true;
 }
 
 // ==================== LUCRO PRESUMIDO ====================
 function calcPresumido() {
-  if (!leadAllowed(calcPresumido)) return;
-  _calcPresumido();
+  if (gatePending(calcPresumido)) return;
+  if (_calcPresumido()) consumeFreeCredit();
 }
 function _calcPresumido() {
   const fat = parseCurrency(document.getElementById('lp-faturamento').value);
@@ -913,12 +923,13 @@ function _calcPresumido() {
     </div>
   `;
   el.classList.add('show');
+  return true;
 }
 
 // ==================== LUCRO REAL ====================
 function calcReal() {
-  if (!leadAllowed(calcReal)) return;
-  _calcReal();
+  if (gatePending(calcReal)) return;
+  if (_calcReal()) consumeFreeCredit();
 }
 function _calcReal() {
   const regimePis = document.getElementById('lr-regime-pis').value;
@@ -945,10 +956,11 @@ function _calcReal() {
     icmsIss = fat * 0.05;
     icmsIssLabel = 'ISS (5%)';
   } else {
-    icmsIss = fat * 0.18;
-    let icmsCredito = compras * 0.18 * 0.8;
+    const icmsAliq = parseFloat(document.getElementById('lr-estado').value) || 0.18;
+    icmsIss = fat * icmsAliq;
+    let icmsCredito = compras * icmsAliq * 0.8;
     icmsIss = Math.max(0, icmsIss - icmsCredito);
-    icmsIssLabel = 'ICMS líquido (~18%)';
+    icmsIssLabel = 'ICMS líquido (~' + formatPct(icmsAliq * 100) + ')';
   }
   let totalAtual = pisCofinsLiquido + icmsIss;
 
@@ -1078,6 +1090,7 @@ function _calcReal() {
     </div>
   `;
   el.classList.add('show');
+  return true;
 }
 
 
@@ -1142,7 +1155,8 @@ function filterCSTCateg(btn, categ) {
 
 // ==================== RELATÓRIO DO PRODUTO (estilo Objetiva) ====================
 function showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total, categ) {
-  if (!leadAllowed(function () { showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total, categ); })) return;
+  if (gatePending(function () { showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total, categ); })) return;
+  consumeFreeCredit();
   // Buscar dados completos do CClassTrib na base oficial
   const cc = cclasstribDB[cclass] || null;
 
@@ -1349,6 +1363,25 @@ function renderNBS(data) {
 
 }
 
+// Termos populares -> fragmento técnico que aparece na base NBS (tudo minúsculo)
+const NBS_SINONIMOS = {
+  'advocacia': 'jurídic', 'advogado': 'jurídic', 'advogada': 'jurídic', 'advogad': 'jurídic',
+  'médico': 'médic', 'medico': 'médic', 'medicina': 'saúde', 'consultório': 'saúde', 'consultorio': 'saúde',
+  'clínica': 'saúde', 'clinica': 'saúde', 'hospital': 'saúde', 'enfermagem': 'saúde',
+  'dentista': 'odontolog', 'odonto': 'odontolog',
+  'contador': 'contábil', 'contadora': 'contábil', 'contabilidade': 'contábil', 'contabil': 'contábil',
+  'engenheiro': 'engenharia', 'engenheira': 'engenharia',
+  'arquiteto': 'arquitetura', 'arquiteta': 'arquitetura',
+  'psicólogo': 'psicologia', 'psicologo': 'psicologia', 'psicóloga': 'psicologia',
+  'professor': 'educaç', 'professora': 'educaç', 'escola': 'educaç', 'curso': 'educaç',
+  'aula': 'educaç', 'faculdade': 'educaç', 'ensino': 'ensino', 'educacao': 'educaç',
+  'frete': 'transporte', 'logística': 'transporte', 'logistica': 'transporte',
+  'motorista': 'transporte', 'entrega': 'transporte', 'transportadora': 'transporte',
+  'ti': 'software', 'dev': 'software', 'programador': 'software', 'programação': 'software',
+  'programacao': 'software', 'sistema': 'software', 'informatica': 'informátic', 'informática': 'informátic',
+  'marketing': 'publicit', 'propaganda': 'publicit', 'publicidade': 'publicit', 'anúncio': 'publicit', 'anuncio': 'publicit'
+};
+
 function filterNBS() {
   const q = document.getElementById('nbs-search').value.toLowerCase().trim();
   let filtered = nbsData;
@@ -1358,14 +1391,19 @@ function filterNBS() {
   }
 
   if (q) {
-    filtered = filtered.filter(r =>
-      r.item.toLowerCase().includes(q) ||
-      r.nbs.toLowerCase().includes(q) ||
-      r.desc.toLowerCase().includes(q) ||
-      r.local.toLowerCase().includes(q) ||
-      r.cc.includes(q) ||
-      r.ccNome.toLowerCase().includes(q)
-    );
+    // Expande termos populares para a nomenclatura técnica da NBS (ex: advocacia -> jurídic)
+    const terms = [q];
+    for (const key in NBS_SINONIMOS) {
+      if (q.includes(key)) terms.push(NBS_SINONIMOS[key]);
+    }
+    filtered = filtered.filter(r => terms.some(t =>
+      r.item.toLowerCase().includes(t) ||
+      r.nbs.toLowerCase().includes(t) ||
+      r.desc.toLowerCase().includes(t) ||
+      r.local.toLowerCase().includes(t) ||
+      r.cc.includes(t) ||
+      r.ccNome.toLowerCase().includes(t)
+    ));
   }
 
   renderNBS(filtered);
@@ -1380,7 +1418,8 @@ function filterNBSCateg(btn, categ) {
 
 // ==================== RELATÓRIO DO SERVIÇO NBS ====================
 function showServiceReport(item, nbs, desc, local, cc, ccNome, categ) {
-  if (!leadAllowed(function () { showServiceReport(item, nbs, desc, local, cc, ccNome, categ); })) return;
+  if (gatePending(function () { showServiceReport(item, nbs, desc, local, cc, ccNome, categ); })) return;
+  consumeFreeCredit();
   // Buscar dados completos do CClassTrib na base oficial
   const ccData = cclasstribDB[cc] || null;
 
