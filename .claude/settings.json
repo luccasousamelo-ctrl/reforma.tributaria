@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; case \"$f\" in *.js) node --check \"$f\" || exit 2;; esac; }",
+            "statusMessage": "Checando sintaxe JS..."
+          }
+        ]
+      }
+    ]
+  }
+}

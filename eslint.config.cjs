@@ -1,0 +1,41 @@
+// Flat config do ESLint. As dependências ficam em server/node_modules (não há
+// package.json na raiz, de propósito, para não mudar a detecção de build da Vercel).
+// Rode pela raiz com:  cd server && npm run lint
+const js = require('./server/node_modules/@eslint/js');
+const globals = require('./server/node_modules/globals');
+
+module.exports = [
+  { ignores: ['**/node_modules/**', 'simplifica-video/**'] },
+
+  js.configs.recommended,
+
+  {
+    // Backend — Node / CommonJS
+    files: ['server/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2023,
+      sourceType: 'commonjs',
+      globals: { ...globals.node },
+    },
+  },
+
+  {
+    // Frontend — JS vanilla no browser. Os scripts compartilham escopo global
+    // entre arquivos (data.js -> app.js -> handlers inline no index.html),
+    // então no-undef geraria ruído; mantemos as regras úteis.
+    files: ['js/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2023,
+      sourceType: 'script',
+      globals: { ...globals.browser },
+    },
+    rules: {
+      // Desligados por causa do padrão vanilla: funções chamadas por onclick inline
+      // no HTML e dados compartilhados entre arquivos viram "unused"/"undef" falsos.
+      // As demais regras recommended (no-dupe-keys, no-redeclare, no-unreachable,
+      // no-constant-condition, etc.) continuam pegando bugs reais.
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+    },
+  },
+];
