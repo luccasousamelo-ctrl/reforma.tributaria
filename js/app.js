@@ -706,11 +706,11 @@ function _calcSimples() {
     </div>
 
     <!-- DIFERENÇA -->
-    <div style="text-align:center;margin:20px 0;padding:16px;background:${economia >= 0 ? '#d1fae5' : '#fee2e2'};border-radius:var(--radius);border:1px solid ${economia >= 0 ? '#a7f3d0' : '#fecaca'};">
-      <div style="font-size:13px;color:${economia >= 0 ? '#065f46' : '#991b1b'};font-weight:600;">
+    <div style="text-align:center;margin:20px 0;padding:16px;background:#d1fae5;border-radius:var(--radius);border:1px solid #a7f3d0;">
+      <div style="font-size:13px;color:#065f46;font-weight:600;">
         ${economia >= 0
-          ? 'Continuar no Simples te economiza <strong>' + formatBRL(Math.abs(economia)) + '/mês</strong>'
-          : 'Pagar por fora te economiza <strong>' + formatBRL(Math.abs(economia)) + '/mês</strong>'
+          ? 'Recolher IBS/CBS por fora te economiza <strong>' + formatBRL(Math.abs(economia)) + '/mês</strong> em imposto direto vs. continuar no Simples'
+          : 'Continuar no Simples te economiza <strong>' + formatBRL(Math.abs(economia)) + '/mês</strong> em imposto direto vs. pagar por fora'
         }
       </div>
     </div>
