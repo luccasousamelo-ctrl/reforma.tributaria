@@ -20,6 +20,15 @@ module.exports = [
   },
 
   {
+    // Testes Playwright — rodam em Node, mas os callbacks de page.evaluate
+    // usam globais de browser (localStorage, getComputedStyle, document...).
+    files: ['server/tests/**/*.js', 'server/playwright.config.js'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
+
+  {
     // Frontend — JS vanilla no browser. Os scripts compartilham escopo global
     // entre arquivos (data.js -> app.js -> handlers inline no index.html),
     // então no-undef geraria ruído; mantemos as regras úteis.
