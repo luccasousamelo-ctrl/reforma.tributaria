@@ -122,8 +122,8 @@ function showLeadGateModal(callback) {
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>' +
       'Acesso Gratuito' +
     '</div>' +
-    '<h2>Cadastre-se e <span>simule gratuitamente</span></h2>' +
-    '<p class="lead-sub">Sem custos. Acesso completo a todas as simulações e tabelas.</p>' +
+    '<h2>Crie sua conta e <span>continue simulando</span></h2>' +
+    '<p class="lead-sub">Sua primeira simulação está liberada. Cadastre-se grátis para acessar as demais abas, comparações e relatórios completos.</p>' +
     '<div id="leadGateStep1">' +
       '<form id="leadGateForm" novalidate>' +
         '<div class="form-group" id="fg-gateName">' +
@@ -440,17 +440,24 @@ function unlockSimulator() {
   if (overlay) overlay.classList.add('unlocked');
 }
 
-if (isLeadVerified()) {
-  unlockSimulator();
-  document.getElementById('leadOverlay').classList.add('hidden');
-} else {
-  // Popup com timer para quem navega sem cadastrar
-  setTimeout(function() {
-    document.getElementById('leadOverlay').classList.remove('hidden');
-  }, 5000);
+// ===== Value-first: 1ª ação de valor é grátis; a partir da 2ª, pede cadastro =====
+// O simulador fica sempre utilizável (sem bloqueio prévio nem popup por timer).
+// "Ação de valor" = rodar uma simulação ou abrir um relatório CST/NBS.
+var freeCreditUsed = false;
+function leadAllowed(onUnlocked) {
+  if (isLeadVerified()) return true;            // já cadastrado → tudo liberado
+  if (!freeCreditUsed) { freeCreditUsed = true; return true; } // 1ª ação grátis
+  showLeadGateModal(function () {               // 2ª em diante → gate contextual
+    unlockSimulator();
+    if (typeof onUnlocked === 'function') onUnlocked();
+  });
+  return false;
 }
 
-// Botão "Desbloquear Simulador" abre o formulário de lead
+unlockSimulator();
+document.getElementById('leadOverlay').classList.add('hidden');
+
+// Botão "Liberar Acesso Gratuito" (se exibido) abre o formulário de lead
 document.getElementById('btnDesbloquear').addEventListener('click', function() {
   showLeadGateModal(function() {
     unlockSimulator();
@@ -478,6 +485,7 @@ function setToggle(btn, inputId, value) {
 
 // ==================== SIMPLES NACIONAL ====================
 function calcSimples() {
+  if (!leadAllowed(calcSimples)) return;
   _calcSimples();
 }
 function _calcSimples() {
@@ -765,6 +773,7 @@ function _calcSimples() {
 
 // ==================== LUCRO PRESUMIDO ====================
 function calcPresumido() {
+  if (!leadAllowed(calcPresumido)) return;
   _calcPresumido();
 }
 function _calcPresumido() {
@@ -908,6 +917,7 @@ function _calcPresumido() {
 
 // ==================== LUCRO REAL ====================
 function calcReal() {
+  if (!leadAllowed(calcReal)) return;
   _calcReal();
 }
 function _calcReal() {
@@ -1132,6 +1142,7 @@ function filterCSTCateg(btn, categ) {
 
 // ==================== RELATÓRIO DO PRODUTO (estilo Objetiva) ====================
 function showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total, categ) {
+  if (!leadAllowed(function () { showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total, categ); })) return;
   // Buscar dados completos do CClassTrib na base oficial
   const cc = cclasstribDB[cclass] || null;
 
@@ -1369,6 +1380,7 @@ function filterNBSCateg(btn, categ) {
 
 // ==================== RELATÓRIO DO SERVIÇO NBS ====================
 function showServiceReport(item, nbs, desc, local, cc, ccNome, categ) {
+  if (!leadAllowed(function () { showServiceReport(item, nbs, desc, local, cc, ccNome, categ); })) return;
   // Buscar dados completos do CClassTrib na base oficial
   const ccData = cclasstribDB[cc] || null;
 
