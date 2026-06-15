@@ -40,6 +40,14 @@ function escapeHtml(s) {
     .replace(/'/g, '&#39;');
 }
 
+// CTA de WhatsApp exibido ao fim do resultado — captura o pico de intenção do usuário.
+function waResultCTA() {
+  var msg = encodeURIComponent('Olá! Fiz a simulação da Reforma Tributária no site e quero falar com um especialista sobre o meu resultado.');
+  return '<a href="https://wa.me/5562999939810?text=' + msg + '" target="_blank" rel="noopener" class="result-wa-cta">' +
+    '<svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.004 0C7.165 0 .002 7.163.002 16c0 2.825.737 5.585 2.14 8.018L.009 32l8.188-2.083A15.93 15.93 0 0016.004 32C24.837 32 32 24.837 32 16S24.837 0 16.004 0zm0 29.09a13.05 13.05 0 01-6.883-1.95l-.493-.295-5.117 1.302 1.37-4.994-.324-.514A13.01 13.01 0 012.912 16c0-7.216 5.876-13.09 13.092-13.09S29.09 8.784 29.09 16c0 7.216-5.87 13.09-13.086 13.09z"/></svg>' +
+    '<span>Falar com um especialista sobre esse resultado</span></a>';
+}
+
 // ==================== UI FEEDBACK ====================
 function showToast(message, type) {
   type = type || 'error';
@@ -144,7 +152,7 @@ function showLeadGateModal(callback) {
       'Acesso Gratuito' +
     '</div>' +
     '<h2>Crie sua conta e <span>continue simulando</span></h2>' +
-    '<p class="lead-sub">Sua primeira simulação está liberada. Cadastre-se grátis para acessar as demais abas, comparações e relatórios completos.</p>' +
+    '<p class="lead-sub">Sua primeira simulação está liberada. Cadastre-se grátis (leva menos de 1 minuto, confirmação por e-mail) para acessar as demais abas, comparações e relatórios completos.</p>' +
     '<div id="leadGateStep1">' +
       '<form id="leadGateForm" novalidate>' +
         '<div class="form-group" id="fg-gateName">' +
@@ -200,7 +208,7 @@ function showLeadGateModal(callback) {
     '<div class="lead-trust">' +
       '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Dados protegidos</span>' +
       '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 100% gratuito</span>' +
-      '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> +12.000 empresas</span>' +
+      '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21h18M6 21V5a2 2 0 012-2h8a2 2 0 012 2v16M10 9h4M10 13h4M10 17h4"/></svg> Ferramenta da MCO Contábil</span>' +
     '</div>' +
   '</div>';
   document.body.appendChild(modal);
@@ -464,7 +472,9 @@ function unlockSimulator() {
 // ===== Value-first: 1ª ação de valor é grátis; a partir da 2ª, pede cadastro =====
 // O simulador fica sempre utilizável (sem bloqueio prévio nem popup por timer).
 // "Ação de valor" = uma simulação que PRODUZ resultado ou um relatório CST/NBS.
-var freeCreditUsed = false;
+var freeCreditUsed = (function () {
+  try { return localStorage.getItem('simulador_free_used') === '1'; } catch (e) { return false; }
+})();
 
 // Mostra o gate quando a ação grátis já foi usada e o lead não é verificado.
 // IMPORTANTE: NÃO consome o crédito aqui — só em consumeFreeCredit(), e apenas
@@ -478,7 +488,10 @@ function gatePending(onUnlocked) {
   return true;
 }
 function consumeFreeCredit() {
-  if (!isLeadVerified()) freeCreditUsed = true;
+  if (!isLeadVerified()) {
+    freeCreditUsed = true;
+    try { localStorage.setItem('simulador_free_used', '1'); } catch (e) { /* ignore */ }
+  }
 }
 
 unlockSimulator();
@@ -805,7 +818,9 @@ function _calcSimples() {
       </div>
     </div>
   `;
+  el.insertAdjacentHTML('beforeend', waResultCTA());
   el.classList.add('show');
+  if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return true;
 }
 
@@ -950,7 +965,9 @@ function _calcPresumido() {
       </div>
     </div>
   `;
+  el.insertAdjacentHTML('beforeend', waResultCTA());
   el.classList.add('show');
+  if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return true;
 }
 
@@ -1124,7 +1141,9 @@ function _calcReal() {
       crédito de ICMS estimado em 80% do imposto das compras. Valores estimados — confirme com seu contador.
     </p>
   `;
+  el.insertAdjacentHTML('beforeend', waResultCTA());
   el.classList.add('show');
+  if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return true;
 }
 
@@ -1695,7 +1714,7 @@ document.getElementById('nbs-search').addEventListener('keyup', debounce(filterN
 (function () {
   // Teclado numérico no mobile para campos de valor/percentual
   document.querySelectorAll('input[oninput^="formatCurrency"], #sn-pctB2B, #lp-iss, #lr-creditos-pct')
-    .forEach(function (i) { i.setAttribute('inputmode', 'numeric'); });
+    .forEach(function (i) { i.setAttribute('inputmode', 'decimal'); });
 
   // FAQ: expõe estado aberto/fechado para leitores de tela
   document.querySelectorAll('.faq-question').forEach(function (b) {
@@ -1720,17 +1739,29 @@ document.getElementById('nbs-search').addEventListener('keyup', debounce(filterN
     });
   });
 
-  // Fecha modal/overlay com Esc
+  // Scroll-lock central: trava o body enquanto houver qualquer modal aberto; destrava quando não houver.
+  function syncScrollLock() {
+    var leadStatic = document.getElementById('leadOverlay');
+    var hasModal = !!document.querySelector('.report-modal-overlay')
+      || Array.prototype.slice.call(document.querySelectorAll('.lead-overlay'))
+           .some(function (el) { return el.id !== 'leadOverlay'; })
+      || (leadStatic && !leadStatic.classList.contains('hidden'));
+    document.body.style.overflow = hasModal ? 'hidden' : '';
+  }
+
+  // Fecha modal/overlay com Esc (lead gate dinâmico, popup estático e relatórios CST/NBS)
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
+    var report = document.querySelector('.report-modal-overlay');
+    if (report) { report.remove(); syncScrollLock(); return; }
     var dyn = Array.prototype.slice.call(document.querySelectorAll('.lead-overlay'))
       .find(function (el) { return el.id !== 'leadOverlay'; });
-    if (dyn) { dyn.remove(); return; }
+    if (dyn) { dyn.remove(); syncScrollLock(); return; }
     var overlay = document.getElementById('leadOverlay');
-    if (overlay && !overlay.classList.contains('hidden')) overlay.classList.add('hidden');
+    if (overlay && !overlay.classList.contains('hidden')) { overlay.classList.add('hidden'); syncScrollLock(); }
   });
 
-  // Foco no 1º campo quando o popup estático abre
+  // Foco no 1º campo quando o popup estático abre + scroll-lock
   var staticOverlay = document.getElementById('leadOverlay');
   if (staticOverlay && window.MutationObserver) {
     new MutationObserver(function () {
@@ -1738,24 +1769,37 @@ document.getElementById('nbs-search').addEventListener('keyup', debounce(filterN
         var f = staticOverlay.querySelector('input');
         if (f) f.focus();
       }
+      syncScrollLock();
     }).observe(staticOverlay, { attributes: true, attributeFilter: ['class'] });
   }
 
-  // Modal dinâmico (lead gate): role de diálogo, foco e teclado numérico no OTP
+  // Modais dinâmicos (lead gate + relatórios CST/NBS): role de diálogo, foco, OTP e scroll-lock
   if (window.MutationObserver) {
     new MutationObserver(function (muts) {
       muts.forEach(function (m) {
         Array.prototype.slice.call(m.addedNodes).forEach(function (n) {
-          if (n.nodeType !== 1 || !n.classList || !n.classList.contains('lead-overlay') || n.id === 'leadOverlay') return;
-          var card = n.querySelector('.lead-card') || n;
-          card.setAttribute('role', 'dialog');
-          card.setAttribute('aria-modal', 'true');
-          var otp = n.querySelector('#verifyCode');
-          if (otp) otp.setAttribute('inputmode', 'numeric');
-          var fld = n.querySelector('input');
-          if (fld) setTimeout(function () { fld.focus(); }, 50);
+          if (n.nodeType !== 1 || !n.classList) return;
+          if (n.classList.contains('lead-overlay') && n.id !== 'leadOverlay') {
+            var card = n.querySelector('.lead-card') || n;
+            card.setAttribute('role', 'dialog');
+            card.setAttribute('aria-modal', 'true');
+            var otp = n.querySelector('#verifyCode');
+            if (otp) otp.setAttribute('inputmode', 'numeric');
+            var fld = n.querySelector('input');
+            if (fld) setTimeout(function () { fld.focus(); }, 50);
+          } else if (n.classList.contains('report-modal-overlay')) {
+            var rcard = n.querySelector('.report-modal') || n;
+            rcard.setAttribute('role', 'dialog');
+            rcard.setAttribute('aria-modal', 'true');
+            n.querySelectorAll('button').forEach(function (b) {
+              if (!b.getAttribute('aria-label') && /^[×✕✖x]$/i.test(b.textContent.trim())) {
+                b.setAttribute('aria-label', 'Fechar');
+              }
+            });
+          }
         });
       });
+      syncScrollLock();
     }).observe(document.body, { childList: true });
   }
 })();

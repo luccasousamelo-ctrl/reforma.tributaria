@@ -1523,6 +1523,17 @@
       .lookup-table td[style*="max-width"] { max-width: none !important; }
       .lookup-empty td { display: block; text-align: center; padding: 28px 16px !important; color: var(--gray-600); border: none !important; }
       .lookup-empty td::before { content: none; }
+      /* Affordance de toque: indica que o card abre o relatório completo */
+      .lookup-table tbody tr:not(.lookup-empty)::after {
+        content: "Ver relatório completo →";
+        display: block;
+        padding: 10px 14px;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 12px;
+        text-align: center;
+      }
 
       /* === LEAD CARD / MODAL === */
       .lead-overlay { padding: 12px; }
@@ -1581,3 +1592,25 @@
       /* === REPORT MODAL === */
       .report-modal-overlay { padding: 12px; }
     }
+
+/* === CTA WhatsApp ao fim do resultado do simulador === */
+.result-wa-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 16px 24px;
+  background: #0d7a3a;
+  color: #fff;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  transition: background .2s ease, transform .2s ease;
+}
+.result-wa-cta:hover { background: #0a5f2e; transform: translateY(-1px); }
+.result-wa-cta:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.result-wa-cta svg { flex-shrink: 0; }
