@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Lint, syntax & e2e
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: ESLint (front + back)
+        run: npm run lint
+
+      - name: Checagem de sintaxe (node --check)
+        run: |
+          node --check ../js/app.js
+          node --check ../js/data.js
+          node --check server.js
+
+      - name: Instalar navegador Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes e2e (Playwright)
+        run: npm run test:e2e
+
+      - name: Publicar artefatos em caso de falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: server/test-results/
+          retention-days: 7

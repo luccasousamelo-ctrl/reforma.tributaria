@@ -5,7 +5,15 @@ const js = require('./server/node_modules/@eslint/js');
 const globals = require('./server/node_modules/globals');
 
 module.exports = [
-  { ignores: ['**/node_modules/**', 'simplifica-video/**'] },
+  // Lint cobre só o código do produto (front + back). Diretórios de ferramentas/framework
+  // (AIOX, configs de IDEs/agentes) têm suas próprias configs e ficam de fora.
+  {
+    ignores: [
+      '**/node_modules/**', 'simplifica-video/**',
+      '.aiox-core/**', '.claude/**', '.codex/**', '.cursor/**',
+      '.gemini/**', '.kimi/**', '.antigravity/**', '.github/**', 'docs/**',
+    ],
+  },
 
   js.configs.recommended,
 
