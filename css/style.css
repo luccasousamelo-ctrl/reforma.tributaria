@@ -11,8 +11,8 @@
       --gray-900: #1f2937;
       --gray-800: #374151;
       --gray-700: #4b5563;
-      --gray-600: #6b7280;
-      --gray-500: #9ca3af;
+      --gray-600: #5b616e;
+      --gray-500: #6b7280;
       --gray-400: #d1d5db;
       --gray-300: #e5e7eb;
       --gray-200: #f3f4f6;
@@ -28,6 +28,23 @@
       --radius-lg: 16px;
       --radius-xl: 24px;
       --section-gap: 96px;
+      /* Escala de espaçamento (base 4px) */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-8: 48px;
+      --space-10: 64px;
+      /* Escala tipográfica */
+      --text-xs: 12px;
+      --text-sm: 13px;
+      --text-base: 15px;
+      --text-lg: 18px;
+      --text-xl: 22px;
+      --text-2xl: 28px;
+      --text-3xl: 36px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1098,7 +1115,7 @@
     }
     .sim-lock-note {
       font-size: 14px !important;
-      color: rgba(15, 23, 42, 0.42) !important;
+      color: rgba(15, 23, 42, 0.7) !important;
       margin-top: 16px !important;
       margin-bottom: 0 !important;
     }

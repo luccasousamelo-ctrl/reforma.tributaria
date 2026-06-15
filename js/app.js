@@ -74,8 +74,10 @@ function showFormError(containerId, message) {
 
   var el = document.createElement('div');
   el.className = 'sim-form-alert alert-error';
+  el.setAttribute('role', 'alert');
   el.innerHTML = '<span>\u26a0\ufe0f</span><span>' + message + '</span>';
   container.insertBefore(el, container.querySelector('.sim-form') || container.firstChild);
+  if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   setTimeout(function() { el.remove(); }, 6000);
 }
@@ -518,8 +520,12 @@ function showTab(tabId) {
 
 // ==================== TOGGLE B2B/B2C ====================
 function setToggle(btn, inputId, value) {
-  btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-checked', 'false');
+  });
   btn.classList.add('active');
+  btn.setAttribute('aria-checked', 'true');
   document.getElementById(inputId).value = value;
 }
 
@@ -1727,6 +1733,22 @@ document.getElementById('nbs-search').addEventListener('keyup', debounce(filterN
   // Teclado numérico no mobile para campos de valor/percentual
   document.querySelectorAll('input[oninput^="formatCurrency"], #sn-pctB2B, #lp-iss, #lr-creditos-pct')
     .forEach(function (i) { i.setAttribute('inputmode', 'decimal'); });
+
+  // Associa cada <label> ao seu campo (for/id) — clicar no rótulo foca o campo (a11y + usabilidade)
+  document.querySelectorAll('.sim-form label, .lookup-card label').forEach(function (lab) {
+    if (lab.htmlFor) return;
+    var field = lab.parentElement && lab.parentElement.querySelector('input:not([type="hidden"]), select, textarea');
+    if (field && field.id) lab.htmlFor = field.id;
+  });
+
+  // Toggles (B2B/B2C, regime PIS) como radiogroup acessível
+  document.querySelectorAll('.toggle-group').forEach(function (grp) {
+    grp.setAttribute('role', 'radiogroup');
+    grp.querySelectorAll('.toggle-btn').forEach(function (b) {
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', b.classList.contains('active') ? 'true' : 'false');
+    });
+  });
 
   // FAQ: expõe estado aberto/fechado para leitores de tela
   document.querySelectorAll('.faq-question').forEach(function (b) {
