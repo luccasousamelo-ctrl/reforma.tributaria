@@ -124,6 +124,7 @@
   </script>
 </head>
 <body>
+<a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
 
 <!-- ==================== LEAD CAPTURE OVERLAY ==================== -->
 <div class="lead-overlay hidden" id="leadOverlay">
@@ -194,6 +195,7 @@
   </div>
 </nav>
 
+<main id="conteudo">
 <!-- ==================== HERO ==================== -->
 <section class="hero">
   <div class="hero-inner">
@@ -421,6 +423,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
               Simular Agora
             </button>
+            <button type="button" class="btn-example" onclick="preencherExemploSimples()">Não sabe por onde começar? Ver com dados de exemplo</button>
           </div>
         </div>
 
@@ -815,6 +818,8 @@
 <script>
 fetch('https://wvfceibnzxrzdueoablw.supabase.co/rest/v1/blog_artigos?empresa=eq.simplificatributo&status=eq.publicado&select=titulo,slug,meta_description,image_url,created_at&order=created_at.desc&limit=3',{headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2ZmNlaWJuenhyemR1ZW9hYmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MjA2MjgsImV4cCI6MjA5MDA5NjYyOH0.eKQdaIO9079hogoRNLHzTUB9ElGdJToNxNWo8-d1sBA'}}).then(r=>r.json()).then(a=>{function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}var g=document.getElementById('blogGrid');if(!a||!a.length){g.innerHTML='<p style="text-align:center;color:var(--gray-600);padding:40px">Em breve novos conteúdos!</p>';return;}g.innerHTML=a.map(function(p){var d=new Date(p.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});var img=p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.titulo)+'" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">':'<div style="height:180px;background:linear-gradient(135deg,var(--primary-light),var(--gray-100))"></div>';return '<a href="https://blog.simplificatributo.com.br/'+encodeURIComponent(p.slug)+'" target="_blank" style="background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-300);box-shadow:var(--shadow-sm);overflow:hidden;text-decoration:none;color:inherit;display:block">'+img+'<div style="padding:16px"><h3 style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px">'+esc(p.titulo)+'</h3><p style="font-size:12px;color:var(--gray-600);margin-bottom:8px">'+esc((p.meta_description||'').substring(0,100))+'...</p><span style="font-size:11px;color:var(--gray-500)">'+d+'</span></div></a>';}).join('');}).catch(function(){document.getElementById('blogGrid').innerHTML='<p style="text-align:center;color:var(--gray-600);padding:40px">Em breve novos conteúdos!</p>';});
 </script>
+
+</main>
 
 <footer class="footer">
   <div class="footer-inner">

@@ -528,6 +528,18 @@ function calcSimples() {
   if (gatePending(calcSimples)) return;
   if (_calcSimples()) consumeFreeCredit();
 }
+// Passo-zero: pré-preenche um cenário plausível e simula, para o usuário ver valor sem fricção.
+function preencherExemploSimples() {
+  var set = function (id, val) { var el = document.getElementById(id); if (el) el.value = val; };
+  set('sn-faturamento', '50.000,00');
+  set('sn-rbt12', '600.000,00');
+  set('sn-atividade', 'comercio');
+  set('sn-folha', '8.000,00');
+  set('sn-clientType', 'b2b');
+  set('sn-pctB2B', '70');
+  set('sn-compras', '20.000,00');
+  calcSimples();
+}
 function _calcSimples() {
   const fat = parseCurrency(document.getElementById('sn-faturamento').value);
   const rbt12 = parseCurrency(document.getElementById('sn-rbt12').value);
@@ -818,7 +830,7 @@ function _calcSimples() {
       </div>
     </div>
   `;
-  el.insertAdjacentHTML('beforeend', waResultCTA());
+  el.insertAdjacentHTML('beforeend', '<p class="result-scenario-note">Estimativa no cenário do regime pleno (2033), com alíquota de referência de ~26,5%. Durante a transição (2026–2032) os valores são proporcionalmente menores.</p>' + waResultCTA());
   el.classList.add('show');
   if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return true;
@@ -965,7 +977,7 @@ function _calcPresumido() {
       </div>
     </div>
   `;
-  el.insertAdjacentHTML('beforeend', waResultCTA());
+  el.insertAdjacentHTML('beforeend', '<p class="result-scenario-note">Estimativa no cenário do regime pleno (2033), com alíquota de referência de ~26,5%. Durante a transição (2026–2032) os valores são proporcionalmente menores.</p>' + waResultCTA());
   el.classList.add('show');
   if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return true;
@@ -1141,7 +1153,7 @@ function _calcReal() {
       crédito de ICMS estimado em 80% do imposto das compras. Valores estimados — confirme com seu contador.
     </p>
   `;
-  el.insertAdjacentHTML('beforeend', waResultCTA());
+  el.insertAdjacentHTML('beforeend', '<p class="result-scenario-note">Estimativa no cenário do regime pleno (2033), com alíquota de referência de ~26,5%. Durante a transição (2026–2032) os valores são proporcionalmente menores.</p>' + waResultCTA());
   el.classList.add('show');
   if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return true;
@@ -1749,6 +1761,30 @@ document.getElementById('nbs-search').addEventListener('keyup', debounce(filterN
     document.body.style.overflow = hasModal ? 'hidden' : '';
   }
 
+  // Focus-trap: mantém o Tab dentro do modal e devolve o foco ao gatilho quando ele fecha (WCAG 2.4.3).
+  var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  function installFocusTrap(modal) {
+    var prevFocus = document.activeElement;
+    function onKey(e) {
+      if (e.key !== 'Tab') return;
+      var f = Array.prototype.slice.call(modal.querySelectorAll(FOCUSABLE))
+        .filter(function (el) { return el.offsetParent !== null || el === document.activeElement; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    document.addEventListener('keydown', onKey, true);
+    var mo = new MutationObserver(function () {
+      if (!document.body.contains(modal)) {
+        document.removeEventListener('keydown', onKey, true);
+        mo.disconnect();
+        if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus();
+      }
+    });
+    mo.observe(document.body, { childList: true });
+  }
+
   // Fecha modal/overlay com Esc (lead gate dinâmico, popup estático e relatórios CST/NBS)
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
@@ -1787,15 +1823,18 @@ document.getElementById('nbs-search').addEventListener('keyup', debounce(filterN
             if (otp) otp.setAttribute('inputmode', 'numeric');
             var fld = n.querySelector('input');
             if (fld) setTimeout(function () { fld.focus(); }, 50);
+            installFocusTrap(n);
           } else if (n.classList.contains('report-modal-overlay')) {
-            var rcard = n.querySelector('.report-modal') || n;
+            var rcard = n.firstElementChild || n;
             rcard.setAttribute('role', 'dialog');
             rcard.setAttribute('aria-modal', 'true');
+            rcard.setAttribute('aria-label', 'Relatório do item');
             n.querySelectorAll('button').forEach(function (b) {
               if (!b.getAttribute('aria-label') && /^[×✕✖x]$/i.test(b.textContent.trim())) {
                 b.setAttribute('aria-label', 'Fechar');
               }
             });
+            installFocusTrap(n);
           }
         });
       });
