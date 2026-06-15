@@ -8,7 +8,9 @@ backend Express, que também expõe a API de pagamentos Asaas.
 ## Estrutura
 
 - **Raiz** — frontend estático: `index.html`, `css/style.css`, `js/app.js` (lógica do simulador
-  e lead gate), `js/data.js` + `js/cclasstrib_oficial.json` (tabelas CST/CClassTrib, ~1,5k itens).
+  e lead gate), `js/data.js` (tabelas tributárias — `cclasstribDB` com 154 itens + as listas
+  `cstData`/`nbsData` de produtos/serviços). O `data.js` (~300KB) é carregado **sob demanda**
+  (lazy-load injetado pelo `app.js` em idle), fora do caminho crítico de carregamento.
   Sem framework, sem bundler, sem ES modules — scripts entram via `<script src>` e usam escopo
   global; o estilo padrão é `var` + funções globais.
 - **`server/`** — backend Node/Express (`server.js`, arquivo único). Serve o frontend da raiz via

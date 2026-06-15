@@ -12,11 +12,32 @@ function formatCurrency(input) {
 }
 
 function formatBRL(n) {
+  n = Number(n);
+  if (!isFinite(n)) n = 0;
   return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 function formatPct(n) {
+  n = Number(n);
+  if (!isFinite(n)) n = 0;
   return n.toFixed(2).replace('.', ',') + '%';
+}
+
+// Limita percentuais informados pelo usuário ao intervalo [0, 100]
+function clampPct(value) {
+  var v = parseFloat(value);
+  if (!isFinite(v)) v = 0;
+  return Math.min(100, Math.max(0, v));
+}
+
+// Escapa texto para inserção segura em HTML (conteúdo e atributos)
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ==================== UI FEEDBACK ====================
@@ -500,10 +521,17 @@ function _calcSimples() {
   const atividade = document.getElementById('sn-atividade').value;
   const folha = parseCurrency(document.getElementById('sn-folha').value);
   const clientType = document.getElementById('sn-clientType').value;
-  const pctB2B = (parseFloat(document.getElementById('sn-pctB2B').value) || 0) / 100;
+  const pctB2B = clampPct(document.getElementById('sn-pctB2B').value) / 100;
   const compras = parseCurrency(document.getElementById('sn-compras').value);
 
   if (!fat || !rbt12) { showFormError('panel-simples', 'Preencha o faturamento mensal e o faturamento anual para simular.'); return; }
+
+  // Teto do Simples Nacional (LC 123/2006, art. 3º, II): RBT12 acima de R$ 4,8M desenquadra.
+  const TETO_SIMPLES = 4800000;
+  if (rbt12 > TETO_SIMPLES) {
+    showFormError('panel-simples', 'O faturamento anual informado (' + formatBRL(rbt12) + ') excede o teto do Simples Nacional (R$ 4.800.000,00). Sua empresa estaria desenquadrada — simule pelo Lucro Presumido ou Lucro Real.');
+    return;
+  }
 
   // ============================================================
   // LC 123/2006 (alterada pela LC 155/2016) — Tabelas oficiais
@@ -796,7 +824,7 @@ function _calcPresumido() {
 
   if (!fat) { showFormError('panel-presumido', 'Preencha o faturamento mensal para simular.'); return; }
 
-  // PIS 0,65% + COFINS 3,00% (cumulativo) = 3,65% (LC 9.718/98 e LC 10.833/03)
+  // PIS 0,65% + COFINS 3,00% (regime cumulativo) = 3,65% (Lei 9.718/1998)
   const PIS_COFINS_ATUAL = 0.0365;
   let impostoAtual = fat * PIS_COFINS_ATUAL;
 
@@ -937,8 +965,8 @@ function _calcReal() {
   const atividade = document.getElementById('lr-atividade').value;
   const compras = parseCurrency(document.getElementById('lr-compras').value);
   const despesas = parseCurrency(document.getElementById('lr-despesas').value);
-  const creditosPct = (parseFloat(document.getElementById('lr-creditos-pct').value) || 0) / 100;
-  const reducao = (parseFloat(document.getElementById('lr-reducao').value) || 0) / 100;
+  const creditosPct = clampPct(document.getElementById('lr-creditos-pct').value) / 100;
+  const reducao = clampPct(document.getElementById('lr-reducao').value) / 100;
 
   if (!fat) { showFormError('panel-real', 'Preencha o faturamento mensal para simular.'); return; }
 
@@ -954,13 +982,15 @@ function _calcReal() {
   let icmsIss, icmsIssLabel;
   if (atividade === 'servicos') {
     icmsIss = fat * 0.05;
-    icmsIssLabel = 'ISS (5%)';
+    icmsIssLabel = 'ISS estimado (5% — teto, LC 116/2003)';
   } else {
     const icmsAliq = parseFloat(document.getElementById('lr-estado').value) || 0.18;
     icmsIss = fat * icmsAliq;
-    let icmsCredito = compras * icmsAliq * 0.8;
+    // Premissa do modelo: ~80% das compras geram crédito de ICMS (aproveitamento parcial estimado).
+    const APROVEITAMENTO_ICMS = 0.8;
+    let icmsCredito = compras * icmsAliq * APROVEITAMENTO_ICMS;
     icmsIss = Math.max(0, icmsIss - icmsCredito);
-    icmsIssLabel = 'ICMS líquido (~' + formatPct(icmsAliq * 100) + ')';
+    icmsIssLabel = 'ICMS líquido estimado (~' + formatPct(icmsAliq * 100) + ')';
   }
   let totalAtual = pisCofinsLiquido + icmsIss;
 
@@ -1088,6 +1118,11 @@ function _calcReal() {
         }</span>
       </div>
     </div>
+
+    <p style="font-size:11px;color:var(--gray-400);margin-top:12px;line-height:1.5;">
+      <strong>Premissas do modelo (Lucro Real):</strong> ISS estimado no teto de 5% (varia de 2% a 5% por município — LC 116/2003);
+      crédito de ICMS estimado em 80% do imposto das compras. Valores estimados — confirme com seu contador.
+    </p>
   `;
   el.classList.add('show');
   return true;
@@ -1095,10 +1130,12 @@ function _calcReal() {
 
 
 let cstActiveFilter = 'todos';
+let cstFiltered = [];
 
 function renderCST(data) {
   const tbody = document.getElementById('cst-body');
   const countEl = document.getElementById('cst-count');
+  cstFiltered = data;
 
   const tagMap = {
     'padrao': 'tag-blue',
@@ -1109,15 +1146,15 @@ function renderCST(data) {
   };
 
   tbody.innerHTML = data.length ? data.map((r, idx) => `
-    <tr style="cursor:pointer;" onclick="showProductReport(${idx}, '${r.ncm}', '${r.desc.replace(/'/g,"\\'")}', '${r.cclass}', '${r.classif.replace(/'/g,"\\'")}', '${r.cst}', '${r.cbs}', '${r.ibs}', '${r.total}', '${r.categ}')" title="Clique para ver o relatório completo">
-      <td data-label="NCM"><strong>${r.ncm}</strong></td>
-      <td data-label="Descrição">${r.desc}</td>
-      <td data-label="CClassTrib"><span class="tag tag-purple">${r.cclass}</span></td>
-      <td data-label="Classificação"><span class="tag ${tagMap[r.categ] || 'tag-blue'}">${r.classif}</span></td>
-      <td data-label="CST"><strong>${r.cst}</strong></td>
-      <td data-label="Alíq. CBS">${r.cbs}</td>
-      <td data-label="Alíq. IBS">${r.ibs}</td>
-      <td data-label="Total 2026"><strong>${r.total}</strong></td>
+    <tr style="cursor:pointer;" onclick="showProductReportByIdx(${idx})" title="Clique para ver o relatório completo">
+      <td data-label="NCM"><strong>${escapeHtml(r.ncm)}</strong></td>
+      <td data-label="Descrição">${escapeHtml(r.desc)}</td>
+      <td data-label="CClassTrib"><span class="tag tag-purple">${escapeHtml(r.cclass)}</span></td>
+      <td data-label="Classificação"><span class="tag ${tagMap[r.categ] || 'tag-blue'}">${escapeHtml(r.classif)}</span></td>
+      <td data-label="CST"><strong>${escapeHtml(r.cst)}</strong></td>
+      <td data-label="Alíq. CBS">${escapeHtml(r.cbs)}</td>
+      <td data-label="Alíq. IBS">${escapeHtml(r.ibs)}</td>
+      <td data-label="Total 2026"><strong>${escapeHtml(r.total)}</strong></td>
     </tr>
   `).join('') : '<tr class="lookup-empty"><td colspan="8">Nenhum produto encontrado. Tente outro NCM, descrição ou código CClassTrib.</td></tr>';
 
@@ -1125,7 +1162,15 @@ function renderCST(data) {
 
 }
 
+// Resolve o registro pelo índice da lista filtrada e abre o relatório (evita serializar dados no onclick)
+function showProductReportByIdx(idx) {
+  const r = cstFiltered[idx];
+  if (!r) return;
+  showProductReport(idx, r.ncm, r.desc, r.cclass, r.classif, r.cst, r.cbs, r.ibs, r.total, r.categ);
+}
+
 function filterCST() {
+  if (typeof cstData === 'undefined') { loadLookupData().then(filterCST); return; }
   const q = document.getElementById('cst-search').value.toLowerCase().trim();
   let filtered = cstData;
 
@@ -1312,10 +1357,12 @@ function showProductReport(idx, ncm, desc, cclass, classif, cst, cbs, ibs, total
 
 
 let nbsActiveFilter = 'todos';
+let nbsFiltered = [];
 
 function renderNBS(data) {
   const tbody = document.getElementById('nbs-body');
   const countEl = document.getElementById('nbs-count');
+  nbsFiltered = data;
 
   const categTag = {
     'padrao': 'tag-red',
@@ -1343,24 +1390,26 @@ function renderNBS(data) {
     return 'tag-orange'; // local da prestação, entrega, etc
   };
 
-  tbody.innerHTML = data.length ? data.map(r => {
-    const safeDesc = r.desc.replace(/'/g, "\\'");
-    const safeLocal = (r.local || '').replace(/'/g, "\\'");
-    const safeCcNome = r.ccNome.replace(/'/g, "\\'");
-    return `
-    <tr style="cursor:pointer;" onclick="showServiceReport('${r.item}','${r.nbs}','${safeDesc}','${safeLocal}','${r.cc}','${safeCcNome}','${r.categ}')" title="Clique para ver o relatório completo">
-      <td data-label="Item LC 116"><strong>${r.item}</strong></td>
-      <td data-label="NBS"><span class="tag tag-purple">${r.nbs}</span></td>
-      <td data-label="Descrição">${r.desc}</td>
-      <td data-label="Local IBS"><span class="tag ${localTag(r.local)}">${r.local || '—'}</span></td>
-      <td data-label="cClassTrib"><span class="tag tag-blue">${r.cc}</span></td>
-      <td data-label="Classificação" style="font-size:12px;max-width:200px;">${r.ccNome}</td>
-      <td data-label="Regime"><span class="tag ${categTag[r.categ] || 'tag-blue'}">${categLabel[r.categ] || r.categ}</span></td>
-    </tr>`;
-  }).join('') : '<tr class="lookup-empty"><td colspan="7">Nenhum serviço encontrado. Tente outro Item LC 116, código NBS ou descrição.</td></tr>';
+  tbody.innerHTML = data.length ? data.map((r, idx) => `
+    <tr style="cursor:pointer;" onclick="showServiceReportByIdx(${idx})" title="Clique para ver o relatório completo">
+      <td data-label="Item LC 116"><strong>${escapeHtml(r.item)}</strong></td>
+      <td data-label="NBS"><span class="tag tag-purple">${escapeHtml(r.nbs)}</span></td>
+      <td data-label="Descrição">${escapeHtml(r.desc)}</td>
+      <td data-label="Local IBS"><span class="tag ${localTag(r.local)}">${escapeHtml(r.local || '—')}</span></td>
+      <td data-label="cClassTrib"><span class="tag tag-blue">${escapeHtml(r.cc)}</span></td>
+      <td data-label="Classificação" style="font-size:12px;max-width:200px;">${escapeHtml(r.ccNome)}</td>
+      <td data-label="Regime"><span class="tag ${categTag[r.categ] || 'tag-blue'}">${categLabel[r.categ] || escapeHtml(r.categ)}</span></td>
+    </tr>`).join('') : '<tr class="lookup-empty"><td colspan="7">Nenhum serviço encontrado. Tente outro Item LC 116, código NBS ou descrição.</td></tr>';
 
   countEl.textContent = `Exibindo ${data.length} de ${nbsData.length} registros — Clique no serviço para ver o relatório completo`;
 
+}
+
+// Resolve o serviço pelo índice da lista filtrada e abre o relatório (evita serializar dados no onclick)
+function showServiceReportByIdx(idx) {
+  const r = nbsFiltered[idx];
+  if (!r) return;
+  showServiceReport(r.item, r.nbs, r.desc, r.local, r.cc, r.ccNome, r.categ);
 }
 
 // Termos populares -> fragmento técnico que aparece na base NBS (tudo minúsculo)
@@ -1383,6 +1432,7 @@ const NBS_SINONIMOS = {
 };
 
 function filterNBS() {
+  if (typeof nbsData === 'undefined') { loadLookupData().then(filterNBS); return; }
   const q = document.getElementById('nbs-search').value.toLowerCase().trim();
   let filtered = nbsData;
 
@@ -1605,9 +1655,37 @@ function toggleFaq(btn) {
   btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 }
 
-// ==================== INIT ====================
-renderCST(cstData);
-renderNBS(nbsData);
+// ==================== INIT — lazy-load das tabelas CST/NBS ====================
+// data.js (~300KB) não bloqueia o load: é injetado em idle e popula as tabelas quando pronto.
+var _lookupDataPromise = null;
+function loadLookupData() {
+  if (typeof cstData !== 'undefined') return Promise.resolve();
+  if (_lookupDataPromise) return _lookupDataPromise;
+  _lookupDataPromise = new Promise(function (resolve, reject) {
+    var s = document.createElement('script');
+    s.src = 'js/data.js';
+    s.onload = resolve;
+    s.onerror = function () { _lookupDataPromise = null; reject(new Error('Falha ao carregar tabelas')); };
+    document.head.appendChild(s);
+  });
+  return _lookupDataPromise;
+}
+function initLookupTables() {
+  loadLookupData().then(function () {
+    renderCST(cstData);
+    renderNBS(nbsData);
+  }).catch(function () {
+    var c = document.getElementById('cst-body');
+    var n = document.getElementById('nbs-body');
+    if (c) c.innerHTML = '<tr class="lookup-empty"><td colspan="8">Não foi possível carregar a tabela. Recarregue a página.</td></tr>';
+    if (n) n.innerHTML = '<tr class="lookup-empty"><td colspan="7">Não foi possível carregar a tabela. Recarregue a página.</td></tr>';
+  });
+}
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(initLookupTables, { timeout: 2500 });
+} else {
+  setTimeout(initLookupTables, 1200);
+}
 
 // Debounced search for CST/NBS filters
 document.getElementById('cst-search').addEventListener('keyup', debounce(filterCST, 300));
