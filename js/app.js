@@ -145,7 +145,7 @@ function mcoEnviarLeadHub() {
         interesse: 'Cadastro no simulador da Reforma Tributária', pagina: location.pathname, utm: utm,
         hp_site: '', ts_abertura: MCO_T0 })
     }).catch(function() {});
-  } catch (e) {}
+  } catch (e) { /* best-effort: o simulador segue mesmo sem o Hub */ }
 }
 
 // ==================== LEAD GATE ====================
