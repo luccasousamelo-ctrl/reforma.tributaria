@@ -128,6 +128,26 @@ function debounce(fn, delay) {
 // ==================== API CONFIG ====================
 var API_LEAD = 'https://wvfceibnzxrzdueoablw.supabase.co/functions/v1/simulador-lead';
 
+// Lead no CRM do Hub MCO (Novos Leads). O cadastro GUARDA o lead; a verificação do
+// código o DESPACHA — o card só nasce com e-mail confirmado. Em paralelo à edge
+// function: se o Hub falhar, o simulador segue igual. keepalive por segurança.
+var MCO_T0 = Date.now(), MCO_LEAD_PENDENTE = null;
+function mcoGuardarLead(nome, email, telefone) { MCO_LEAD_PENDENTE = { nome: nome, email: email, telefone: telefone }; }
+function mcoEnviarLeadHub() {
+  var d = MCO_LEAD_PENDENTE; MCO_LEAD_PENDENTE = null;
+  if (!d) return;
+  try {
+    var q = new URLSearchParams(location.search), utm = {};
+    ['source', 'medium', 'campaign', 'content', 'term'].forEach(function(k) { var v = q.get('utm_' + k); if (v) utm[k] = v; });
+    fetch('https://www.hubmcocontabil.com.br/api/site-lead', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+      body: JSON.stringify({ site: 'simplificatributo', nome: d.nome, email: d.email, telefone: d.telefone,
+        interesse: 'Cadastro no simulador da Reforma Tributária', pagina: location.pathname, utm: utm,
+        hp_site: '', ts_abertura: MCO_T0 })
+    }).catch(function() {});
+  } catch (e) { /* best-effort: o simulador segue mesmo sem o Hub */ }
+}
+
 // ==================== LEAD GATE ====================
 function isLeadVerified() {
   try {
@@ -278,6 +298,7 @@ function showLeadGateModal(callback) {
       }
 
       saveLeadLocal({ lead_id: result.lead_id, email: document.getElementById('gateEmail').value, verified: false });
+      mcoGuardarLead(document.getElementById('gateName').value, document.getElementById('gateEmail').value, document.getElementById('gatePhone').value);
 
       // Mostrar step 2
       document.getElementById('leadGateStep1').style.display = 'none';
@@ -341,6 +362,7 @@ function showLeadGateModal(callback) {
 
       // Sucesso!
       saveLeadLocal({ lead_id: leadId, verified: true });
+      mcoEnviarLeadHub();
       document.getElementById('leadGateStep2').style.display = 'none';
       document.getElementById('leadGateStep3').style.display = 'block';
 
@@ -446,6 +468,7 @@ async function handleLeadSubmit(e) {
 
     if (res.ok && result.lead_id) {
       saveLeadLocal({ lead_id: result.lead_id, email: email, verified: false });
+      mcoGuardarLead(nome, email, telefone);
       document.getElementById('leadOverlay').classList.add('hidden');
       showLeadGateModal(function() { unlockSimulator(); });
     } else {
