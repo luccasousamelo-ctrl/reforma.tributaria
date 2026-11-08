@@ -132,18 +132,21 @@ var API_LEAD = 'https://wvfceibnzxrzdueoablw.supabase.co/functions/v1/simulador-
 // código o DESPACHA — o card só nasce com e-mail confirmado. Em paralelo à edge
 // function: se o Hub falhar, o simulador segue igual. keepalive por segurança.
 var MCO_T0 = Date.now(), MCO_LEAD_PENDENTE = null;
-function mcoGuardarLead(nome, email, telefone) { MCO_LEAD_PENDENTE = { nome: nome, email: email, telefone: telefone }; }
+// waOk = caixa "Autorizo ... WhatsApp" marcada no cadastro; segue guardada até a verificação.
+function mcoGuardarLead(nome, email, telefone, waOk) { MCO_LEAD_PENDENTE = { nome: nome, email: email, telefone: telefone, waOk: waOk === true }; }
 function mcoEnviarLeadHub() {
   var d = MCO_LEAD_PENDENTE; MCO_LEAD_PENDENTE = null;
   if (!d) return;
   try {
     var q = new URLSearchParams(location.search), utm = {};
     ['source', 'medium', 'campaign', 'content', 'term'].forEach(function(k) { var v = q.get('utm_' + k); if (v) utm[k] = v; });
+    var corpo = { site: 'simplificatributo', nome: d.nome, email: d.email, telefone: d.telefone,
+      interesse: 'Cadastro no simulador da Reforma Tributária', pagina: location.pathname, utm: utm,
+      hp_site: '', ts_abertura: MCO_T0 };
+    if (d.waOk) { corpo.consentimento_whatsapp = true; corpo.consentimento_whatsapp_versao = 'wa-v1-2026-11'; }
     fetch('https://www.hubmcocontabil.com.br/api/site-lead', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
-      body: JSON.stringify({ site: 'simplificatributo', nome: d.nome, email: d.email, telefone: d.telefone,
-        interesse: 'Cadastro no simulador da Reforma Tributária', pagina: location.pathname, utm: utm,
-        hp_site: '', ts_abertura: MCO_T0 })
+      body: JSON.stringify(corpo)
     }).catch(function() {});
   } catch (e) { /* best-effort: o simulador segue mesmo sem o Hub */ }
 }
@@ -188,6 +191,10 @@ function showLeadGateModal(callback) {
         '<div class="form-group" id="fg-gatePhone">' +
           '<label for="gatePhone">WhatsApp</label>' +
           '<input type="tel" id="gatePhone" placeholder="(62) 99999-9999" autocomplete="tel">' +
+        '</div>' +
+        '<div class="form-consent">' +
+          '<input type="checkbox" id="gateWhatsapp">' +
+          '<label for="gateWhatsapp">Autorizo a MCO Contábil a falar comigo pelo WhatsApp sobre esta solicitação. Posso cancelar quando quiser.</label>' +
         '</div>' +
         '<div id="leadGateError" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>' +
         '<button type="submit" class="btn-primary" id="leadGateBtn">' +
@@ -298,7 +305,7 @@ function showLeadGateModal(callback) {
       }
 
       saveLeadLocal({ lead_id: result.lead_id, email: document.getElementById('gateEmail').value, verified: false });
-      mcoGuardarLead(document.getElementById('gateName').value, document.getElementById('gateEmail').value, document.getElementById('gatePhone').value);
+      mcoGuardarLead(document.getElementById('gateName').value, document.getElementById('gateEmail').value, document.getElementById('gatePhone').value, document.getElementById('gateWhatsapp').checked);
 
       // Mostrar step 2
       document.getElementById('leadGateStep1').style.display = 'none';
@@ -468,7 +475,7 @@ async function handleLeadSubmit(e) {
 
     if (res.ok && result.lead_id) {
       saveLeadLocal({ lead_id: result.lead_id, email: email, verified: false });
-      mcoGuardarLead(nome, email, telefone);
+      mcoGuardarLead(nome, email, telefone, document.getElementById('leadWhatsapp').checked);
       document.getElementById('leadOverlay').classList.add('hidden');
       showLeadGateModal(function() { unlockSimulator(); });
     } else {
