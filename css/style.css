@@ -167,6 +167,27 @@
       box-shadow: 0 0 0 3px rgba(26,86,219,.12);
     }
     .form-group input::placeholder { color: var(--gray-500); }
+    /* Aceite opcional de WhatsApp (fora do .form-group: lá o input ocupa 100%) */
+    .form-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 4px 0 16px;
+    }
+    .form-consent input[type="checkbox"] {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      margin: 1px 0 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .form-consent label {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--gray-700);
+      cursor: pointer;
+    }
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
